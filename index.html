@@ -307,6 +307,17 @@
       .tpill:active{ border-color:var(--accent); color:var(--accent-hi); }
       #t-menu{ top:calc(12px + env(safe-area-inset-top)); right:calc(14px + env(safe-area-inset-right)); }
       #t-spawn{ top:calc(66px + env(safe-area-inset-top)); right:calc(14px + env(safe-area-inset-right)); }
+      #t-vehicle{ top:calc(120px + env(safe-area-inset-top)); left:calc(14px + env(safe-area-inset-left)); border-color:var(--accent); color:var(--accent-hi); }
+      #t-scope{ bottom:calc(196px + env(safe-area-inset-bottom)); right:calc(28px + env(safe-area-inset-right)); }
+      /* ---------- Sniper scope overlay ---------- */
+      #scope-overlay{ position:fixed; inset:0; z-index:6; pointer-events:none; display:flex; align-items:center; justify-content:center;
+        background:radial-gradient(circle at center, transparent 0 31vmin, rgba(0,0,0,.97) 34vmin); }
+      #scope-overlay .scope-lens{ position:relative; width:62vmin; height:62vmin; border-radius:50%; border:2px solid rgba(0,0,0,.9);
+        box-shadow:inset 0 0 60px rgba(20,40,60,.35); }
+      #scope-overlay .scope-h{ position:absolute; left:0; right:0; top:50%; height:1.5px; margin-top:-1px; background:rgba(10,10,10,.85); }
+      #scope-overlay .scope-v{ position:absolute; top:0; bottom:0; left:50%; width:1.5px; margin-left:-1px; background:rgba(10,10,10,.85); }
+      #scope-overlay .scope-dot{ position:absolute; left:50%; top:50%; width:5px; height:5px; margin:-2.5px 0 0 -2.5px; border-radius:50%; background:rgba(200,30,20,.9); }
+      body.vr-active #scope-overlay{ display:none !important; }
       /* HUD fit on touch: no keyboard hints, ammo stacked under the
          MENU/SPAWN corner so it never collides with the FIRE cluster. */
       body.touch #hud-bl{ display:none; }
@@ -464,7 +475,12 @@
       <button class="tbtn" id="t-grab">GRAB</button>
       <button class="tpill" id="t-menu">MENU</button>
       <button class="tpill" id="t-spawn">SPAWN</button>
+      <button class="tpill hidden" id="t-vehicle">ENTER</button>
+      <button class="tpill hidden" id="t-scope">SCOPE</button>
     </div>
+    <!-- Sniper scope overlay (flat screen): a dark vignette with a
+         circular lens and crosshair lines, shown while scoped. -->
+    <div id="scope-overlay" class="hidden" aria-hidden="true"><div class="scope-lens"><span class="scope-h"></span><span class="scope-v"></span><span class="scope-dot"></span></div></div>
 
     <!-- ============ Rotate prompt (touch, portrait, playing only) ============ -->
     <div id="rotate-overlay" class="hidden" role="alert" aria-live="polite">
@@ -492,7 +508,7 @@
     <!-- ================= Home ================= -->
     <section id="scr-home" class="screen active">
       <div class="brand"><div class="logo-box"></div><h1 class="title">OPEN<span class="thin">BOX</span></h1></div>
-      <p class="tagline">A tiny physics sandbox — built for VR on Meta Quest 2, 3 and 3S. Enter VR and you land in a 3D menu: point, pull the trigger (or pinch), pick a map. The base game ships with one map, one Glock 17 and one stickman — everything else arrives as a mod.</p>
+      <p class="tagline">A physics sandbox with a Halo-style sci-fi look — built for VR on Meta Quest 2, 3 and 3S, and flat on desktop &amp; phone. Three built-in maps (Sandbox, the new City, and Farm via its bundled mod), driveable vehicles — a Warthog-style jeep and a Ghost-style hover bike — and an arsenal: Glock 17, Battle Rifle, Sniper Rifle, Shotgun and a glowing Energy Sword, plus the AK-47 and Knife from mods. Spawn it all from the Q menu and make a mess.</p>
       <p id="vr-status">Checking VR support…</p>
       <nav class="menu">
         <button class="btn hidden" id="btn-enter-vr">Enter VR <span class="arr">&rarr;</span></button>
@@ -507,7 +523,7 @@
       </nav>
       <p id="quest-install-help" class="hidden">On Quest: open this page in the Quest Browser &rarr; menu &rarr; Install, and OpenBox appears in your app library as a standalone VR app.</p>
       <div class="home-foot">
-        <div class="ver"><span id="home-version">OpenBox v0.1.3</span> — QUEST VR BUILD<br/>OPENS IN VR ON QUEST 2 / 3 / 3S · FLAT MODE ON DESKTOP &amp; PHONE</div>
+        <div class="ver"><span id="home-version">OpenBox v0.1.4</span> — QUEST VR BUILD<br/>OPENS IN VR ON QUEST 2 / 3 / 3S · FLAT MODE ON DESKTOP &amp; PHONE</div>
         <button class="btn small ghost" id="btn-vr">Check VR support</button>
       </div>
     </section>
@@ -656,7 +672,7 @@ OpenBox.RegisterWeapon("knife", { kind = "melee", damage = 45, range = 2.2, fire
         <h2 class="screentitle">UPDATE</h2>
       </div>
       <div class="upd-card">
-        <div class="upd-row"><span class="k">Current version</span><span class="v" id="upd-current">v0.1.3</span></div>
+        <div class="upd-row"><span class="k">Current version</span><span class="v" id="upd-current">v0.1.4</span></div>
         <div class="upd-row"><span class="k">Latest version</span><span class="v small" id="upd-latest">—</span></div>
         <div class="upd-row"><span class="k">Platform</span><span class="v small" id="upd-platform">—</span></div>
       </div>
@@ -755,7 +771,7 @@ var rand = function(a,b){ return a + Math.random()*(b-a); };
 /* Single source of truth for the game version. Bump this one constant
    when a new build ships — the home footer and every update check
    compare against it. */
-var GAME_VERSION = "0.1.3";
+var GAME_VERSION = "0.1.4";
 var UPDATE_RELEASES_API = "https://api.github.com/repos/elipoop94/openbox-opensource-sandbox-game-/releases/latest";
 var UPDATE_RELEASES_PAGE = "https://github.com/elipoop94/openbox-opensource-sandbox-game-/releases/latest";
 
@@ -819,6 +835,40 @@ var AudioSys = {
   /* AK-47: a deeper automatic-rifle crack than the Glock (the mod's
      sounds/ak47_shot.wav was never supplied, so it is synthesised). */
   akShot: function(){ this.noise(0.22, 2500, 200, 0.95); this.tone(115, 34, 0.13, 0.65); this.noise(0.07, 5200, 2400, 0.28, "highpass"); },
+  /* v0.1.4 weapons — each with its own voice. Battle Rifle: a tight,
+     punchy triple-crack (one call per burst shot). Sniper: a huge
+     booming crack with a long tail. Shotgun: a fat low blast. */
+  brShot: function(){ this.noise(0.13, 3600, 420, 0.8); this.tone(190, 55, 0.08, 0.55); this.noise(0.05, 6000, 3000, 0.22, "highpass"); },
+  sniperShot: function(){ this.noise(0.5, 4200, 120, 1.0); this.tone(90, 26, 0.34, 0.8); this.noise(0.12, 7000, 2600, 0.3, "highpass"); this.noise(0.7, 500, 90, 0.25); },
+  shotgunShot: function(){ this.noise(0.3, 1900, 130, 1.0); this.tone(95, 30, 0.2, 0.75); this.noise(0.06, 4800, 2200, 0.2, "highpass"); },
+  shotgunPump: function(){ var s = this; this.click(420); setTimeout(function(){ s.click(760); }, 130); },
+  /* Energy Sword: an electric snap-hiss on the swing, a searing zap
+     on a hit, and a low plasma hum that runs while it is equipped. */
+  swordSwing: function(){ this.noise(0.22, 700, 3400, 0.42, "bandpass"); this.tone(880, 1760, 0.16, 0.1, "sawtooth"); },
+  swordHit: function(){ this.noise(0.16, 2600, 300, 0.6, "bandpass"); this.tone(1400, 180, 0.14, 0.35, "sawtooth"); },
+  swordHumOsc: null, swordHumGain: null,
+  swordHumStart: function(){
+    if (!this.ctx || this.swordHumOsc) return;
+    try {
+      var o = this.ctx.createOscillator(); o.type = "sawtooth"; o.frequency.value = 58;
+      var o2 = this.ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = 116;
+      var f = this.ctx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 420;
+      var g = this.ctx.createGain(); g.gain.value = 0.0;
+      g.gain.linearRampToValueAtTime(0.045, this.ctx.currentTime + 0.25);
+      o.connect(f); o2.connect(f); f.connect(g); g.connect(this.sfxBus);
+      o.start(); o2.start();
+      this.swordHumOsc = [o, o2]; this.swordHumGain = g;
+    } catch(e){}
+  },
+  swordHumStop: function(){
+    if (!this.swordHumOsc) return;
+    var oscs = this.swordHumOsc, g = this.swordHumGain;
+    this.swordHumOsc = null; this.swordHumGain = null;
+    try {
+      g.gain.linearRampToValueAtTime(0.0, this.ctx.currentTime + 0.12);
+      setTimeout(function(){ oscs.forEach(function(o){ try { o.stop(); } catch(e){} }); }, 200);
+    } catch(e){}
+  },
   /* The CSGO Bot's rifle, heard from the player's side; v is loudness. */
   botShot: function(v){ var p = clamp(v == null ? 0.5 : v, 0.04, 0.7); this.noise(0.18, 2300, 180, p); this.tone(110, 34, 0.11, p * 0.8); },
   /* Knife swing whoosh (the Knife mod's sounds/knife_swing.wav was
@@ -905,7 +955,14 @@ function normalizeWeapon(id, p){
     auto: isMelee ? false : (p.auto != null ? !!p.auto : (p.fire_rate != null ? p.fire_rate <= 0.15 : (p.fireRate != null ? p.fireRate <= 0.15 : false))),
     color: p.color || (wid === "ak47" ? "#4a3220" : "#3d4750"),
     recoil: isMelee ? 0 : (p.recoil || (wid === "ak47" ? 1.5 : 1)),
-    sound: p.sound || null
+    sound: p.sound || null,
+    /* v0.1.4 firing modes, carried through for mod weapons too:
+       burst = rounds per trigger pull, pellets/spread = shotgun cone,
+       scope = right-click zoom (Sniper Rifle). */
+    burst: p.burst || 0,
+    pellets: p.pellets || 0,
+    spread: p.spread || 0,
+    scope: !!p.scope
   };
 }
 
@@ -981,14 +1038,14 @@ var OpenBox = {
 if (typeof window !== "undefined") window.OpenBox = OpenBox;
 
 var SANDBOX_DEF = {
-  name: "Sandbox", spawn: [0, 10], floorSize: 64, floorColor: "#43484e", sky: "#10161d", fog: "#10161d",
+  name: "Sandbox", spawn: [0, 10], floorSize: 64, floorColor: "#43484e", sky: "#8fc3e8", fog: "#a8c4de",
   boxes: [
-    { pos: [-8, 1, -10], size: [12, 2, 1.2], color: "#5b636c" },
+    { pos: [-8, 1, -10], size: [12, 2, 1.2], color: "#5b636c", strip: "amber" },
     { pos: [7, 1, -14], size: [1.2, 2, 10], color: "#5b636c" },
     { pos: [10, 0.75, 2], size: [3, 1.5, 3], color: "#68727c" },
     { pos: [-12, 0.5, 6], size: [2, 1, 2], color: "#68727c" },
     { pos: [-12, 1.5, 6], size: [2, 1, 2], color: "#59636c" },
-    { pos: [0, 1.5, -20], size: [16, 3, 1.2], color: "#525b64" }
+    { pos: [0, 1.5, -20], size: [16, 3, 1.2], color: "#525b64", strip: "cyan" }
   ],
   ramps: [
     { pos: [-4, 0, -4], size: [4, 2, 7], dir: 0, color: "#4c555f" },
@@ -996,6 +1053,105 @@ var SANDBOX_DEF = {
   ]
 };
 var GLOCK_DEF = { id:"glock17", name:"Glock 17", damage:34, mag:17, reserve:170, interval:130, reloadMs:1150, auto:false, color:"#23272b", recoil:1 };
+/* v0.1.4 built-in weapons (base game, next to the Glock in the spawn
+   menu). Battle Rifle: 3-round burst. Sniper Rifle: scope zoom on
+   right-click, huge damage, slow cycle. Shotgun: 8 pellets in a cone,
+   damage is per pellet so it is devastating up close and weak far
+   away. Energy Sword: melee like the Knife but longer reach, much
+   higher damage, glowing blade + hum (kind "melee", so no ammo). */
+var BR_DEF = { id:"battlerifle", name:"Battle Rifle", damage:26, mag:36, reserve:216, interval:460, reloadMs:1600, auto:false, color:"#3a4149", recoil:1.1, burst:3, burstGap:72 };
+var SNIPER_DEF = { id:"sniper", name:"Sniper Rifle", damage:150, mag:4, reserve:40, interval:1450, reloadMs:2300, auto:false, color:"#2c3138", recoil:2.6, scope:true };
+var SHOTGUN_DEF = { id:"shotgun", name:"Shotgun", damage:13, mag:6, reserve:48, interval:950, reloadMs:2100, auto:false, color:"#4a3423", recoil:2.2, pellets:8, spread:0.052 };
+var SWORD_DEF = { id:"energysword", name:"Energy Sword", kind:"melee", damage:95, range:2.8, mag:0, reserve:0, interval:520, reloadMs:0, auto:false, color:"#53e6e0", recoil:0 };
+
+/* Built-in map: City (v0.1.4) — a Halo 3 New Mombasa-style city,
+   ~120x120. Grid avenues (x = 0 and z = 0 cross at the central plaza,
+   plus ring streets at ±32), tall towers with lit-window glass,
+   concrete and metal-panel blocks, a ring monument on the plaza, a
+   skybridge over the west avenue, alleys between towers, parked
+   vehicles, streetlights, crates and barriers. Registered as a base
+   game map in rebuildRegistry — the user asked for built-in maps. */
+var CITY_DEF = {
+  name: "City", spawn: [0, 52], spawnYaw: 0, floorSize: 120, floorColor: "#3f444a", floorTex: "concrete",
+  sky: "#8fc3e8", fog: "#a8c4de", fogNear: 70, fogFar: 250,
+  light: { sun: 1.2, hemi: 0.85 },
+  city: true,
+  plaza: { x: 0, z: 0, r: 12 },
+  roads: [
+    { x: 0, z: 0, w: 13, l: 120, dir: "ns" }, { x: 0, z: 0, w: 13, l: 120, dir: "ew" },
+    { x: -32, z: 0, w: 9, l: 120, dir: "ns" }, { x: 32, z: 0, w: 9, l: 120, dir: "ns" },
+    { x: 0, z: -32, w: 9, l: 120, dir: "ew" }, { x: 0, z: 32, w: 9, l: 120, dir: "ew" }
+  ],
+  parked: [ [4.2, 18, 0], [-4.2, -22, 0], [18, 4.2, 1], [-24, -4.2, 1], [4.2, -44, 0], [-36.5, 14, 0], [28, -36.5, 1], [-14, 36.5, 1] ],
+  streetlights: [ [-7.5, 14], [7.5, 14], [-7.5, -14], [7.5, -14], [-14, 7.5], [14, 7.5], [-14, -7.5], [14, -7.5], [-32, 20], [32, -20], [-20, 32], [20, -32], [-7.5, 44], [7.5, -44] ],
+  boxes: [
+    /* perimeter barrier — low wall ring with glowing trim */
+    { pos: [0, 1, -59], size: [118, 2, 1.2], color: "#4a5158", tex: "concrete", strip: "cyan" },
+    { pos: [0, 1, 59], size: [118, 2, 1.2], color: "#4a5158", tex: "concrete", strip: "cyan" },
+    { pos: [-59, 1, 0], size: [1.2, 2, 118], color: "#4a5158", tex: "concrete", strip: "cyan" },
+    { pos: [59, 1, 0], size: [1.2, 2, 118], color: "#4a5158", tex: "concrete", strip: "cyan" },
+    /* NW block towers */
+    { pos: [-16, 9, -16], size: [10, 18, 10], color: "#6a7681", tex: "glasswin", strip: "amber" },
+    { pos: [-26, 13, -17], size: [7, 26, 8], color: "#5b6672", tex: "glasswin", strip: "cyan" },
+    { pos: [-16, 6, -27], size: [9, 12, 7], color: "#7a6a55", tex: "concrete" },
+    { pos: [-44, 11, -16], size: [11, 22, 10], color: "#66707a", tex: "glasswin", strip: "amber" },
+    { pos: [-45, 7, -27], size: [8, 14, 7], color: "#59636c", tex: "metalpanel" },
+    { pos: [-44, 4.5, -44], size: [12, 9, 12], color: "#707a84", tex: "concrete", strip: "cyan" },
+    { pos: [-16, 15, -45], size: [10, 30, 11], color: "#626e79", tex: "glasswin", strip: "amber" },
+    { pos: [-27, 5, -44], size: [7, 10, 9], color: "#7d7466", tex: "concrete" },
+    /* NE block towers */
+    { pos: [16, 12, -16], size: [10, 24, 10], color: "#66707a", tex: "glasswin", strip: "cyan" },
+    { pos: [27, 7, -17], size: [7, 14, 8], color: "#77694f", tex: "concrete" },
+    { pos: [16, 5, -27], size: [9, 10, 7], color: "#5f6a74", tex: "metalpanel", strip: "amber" },
+    { pos: [44, 9, -16], size: [11, 18, 10], color: "#6a7681", tex: "glasswin", strip: "cyan" },
+    { pos: [45, 14, -28], size: [8, 28, 8], color: "#5b6672", tex: "glasswin", strip: "amber" },
+    { pos: [44, 6, -44], size: [12, 12, 12], color: "#707a84", tex: "metalpanel" },
+    { pos: [16, 8, -45], size: [10, 16, 11], color: "#626e79", tex: "glasswin", strip: "cyan" },
+    { pos: [28, 11, -44], size: [8, 22, 9], color: "#6f6152", tex: "concrete", strip: "amber" },
+    /* SW block towers */
+    { pos: [-16, 7, 16], size: [10, 14, 10], color: "#5f6a74", tex: "glasswin", strip: "cyan" },
+    { pos: [-27, 10, 17], size: [7, 20, 8], color: "#6a7681", tex: "glasswin", strip: "amber" },
+    { pos: [-16, 13, 27], size: [9, 26, 7], color: "#626e79", tex: "glasswin" },
+    { pos: [-44, 5, 16], size: [11, 10, 10], color: "#77694f", tex: "concrete" },
+    { pos: [-45, 12, 28], size: [8, 24, 8], color: "#5b6672", tex: "glasswin", strip: "cyan" },
+    { pos: [-44, 8, 44], size: [12, 16, 12], color: "#707a84", tex: "metalpanel", strip: "amber" },
+    { pos: [-16, 6, 45], size: [10, 12, 11], color: "#66707a", tex: "glasswin" },
+    { pos: [-28, 4, 44], size: [8, 8, 9], color: "#59636c", tex: "concrete" },
+    /* SE block towers */
+    { pos: [16, 10, 16], size: [10, 20, 10], color: "#6a7681", tex: "glasswin", strip: "amber" },
+    { pos: [27, 6, 17], size: [7, 12, 8], color: "#5f6a74", tex: "metalpanel" },
+    { pos: [16, 4.5, 27], size: [9, 9, 7], color: "#77694f", tex: "concrete", strip: "cyan" },
+    { pos: [44, 13, 16], size: [11, 26, 10], color: "#626e79", tex: "glasswin", strip: "cyan" },
+    { pos: [45, 7, 28], size: [8, 14, 8], color: "#66707a", tex: "glasswin" },
+    { pos: [44, 5, 44], size: [12, 10, 12], color: "#707a84", tex: "concrete", strip: "amber" },
+    { pos: [16, 11, 45], size: [10, 22, 11], color: "#5b6672", tex: "glasswin", strip: "cyan" },
+    { pos: [28, 8, 44], size: [8, 16, 9], color: "#6f6152", tex: "concrete" },
+    /* skybridge deck over the west avenue (z = 0 street), at x -18 */
+    { pos: [-18, 7, 0], size: [4.5, 1, 26], color: "#59636c", tex: "metalpanel", strip: "cyan" },
+    { pos: [-18, 3.5, -8], size: [1.2, 7, 1.2], color: "#4a5158", tex: "concrete" },
+    { pos: [-18, 3.5, 8], size: [1.2, 7, 1.2], color: "#4a5158", tex: "concrete" },
+    /* plaza crates + barriers (cover) */
+    { pos: [-9, 0.55, 9], size: [2.2, 1.1, 1], color: "#8a6a42", tex: "planks" },
+    { pos: [9, 0.55, -9], size: [2.2, 1.1, 1], color: "#8a6a42", tex: "planks" },
+    { pos: [9, 0.55, 9], size: [1, 1.1, 2.2], color: "#68727c", tex: "metalpanel" },
+    { pos: [-9, 0.55, -9], size: [1, 1.1, 2.2], color: "#68727c", tex: "metalpanel" },
+    { pos: [0, 0.5, 20], size: [6, 1, 0.7], color: "#b3541e", tex: "metalpanel", strip: "amber" },
+    { pos: [0, 0.5, -20], size: [6, 1, 0.7], color: "#b3541e", tex: "metalpanel", strip: "amber" },
+    { pos: [20, 0.5, 0], size: [0.7, 1, 6], color: "#b3541e", tex: "metalpanel", strip: "amber" },
+    { pos: [-20, 0.5, 0], size: [0.7, 1, 6], color: "#b3541e", tex: "metalpanel", strip: "amber" },
+    /* alley cover blocks */
+    { pos: [-21, 0.6, -22], size: [1.6, 1.2, 1.6], color: "#68727c", tex: "concrete" },
+    { pos: [21, 0.6, 22], size: [1.6, 1.2, 1.6], color: "#68727c", tex: "concrete" },
+    { pos: [38, 0.6, -22], size: [1.6, 1.2, 1.6], color: "#8a6a42", tex: "planks" },
+    { pos: [-38, 0.6, 38], size: [1.6, 1.2, 1.6], color: "#8a6a42", tex: "planks" }
+  ],
+  ramps: [
+    { pos: [-18, 0, 16.5], size: [4.5, 7, 7], dir: 0, color: "#59636c", tex: "metalpanel" },
+    { pos: [-18, 0, -16.5], size: [4.5, 7, 7], dir: 1, color: "#59636c", tex: "metalpanel" },
+    { pos: [52, 0, 52], size: [6, 2, 8], dir: 1, color: "#4c555f", tex: "concrete" },
+    { pos: [-52, 0, -52], size: [6, 2, 8], dir: 0, color: "#4c555f", tex: "concrete" }
+  ]
+};
 
 /* Bundled mod map: Farm (Mods/FarmMap/maps/farm/map.json, mod id
    "farm_map"). The on-disk map.json layout — walls / ramps / props in
@@ -1064,13 +1220,18 @@ var FARM_MAP_DEF = {
 };
 
 function rebuildRegistry(){
-  Registry.maps = [ { id:"sandbox", name:"Sandbox", def:SANDBOX_DEF, source:"Base game" } ];
+  Registry.maps = [ { id:"sandbox", name:"Sandbox", def:SANDBOX_DEF, source:"Base game" },
+                    { id:"city", name:"City", def:CITY_DEF, source:"Base game" } ];
   Registry.props = [
     { id:"cube", name:"Cube", shape:"box", color:"#c8cdd2", size:0.8, source:"Base game" },
     { id:"barrel", name:"Barrel", shape:"cylinder", color:"#b3541e", size:1.05, source:"Base game" },
     { id:"stickman", name:"Stickman", shape:"stickman", color:"#17181a", size:1.8, source:"Base game" }
   ];
-  Registry.weapons = [ Object.assign({ source:"Base game" }, GLOCK_DEF) ];
+  Registry.weapons = [ Object.assign({ source:"Base game" }, GLOCK_DEF),
+    Object.assign({ source:"Base game" }, BR_DEF),
+    Object.assign({ source:"Base game" }, SNIPER_DEF),
+    Object.assign({ source:"Base game" }, SHOTGUN_DEF),
+    Object.assign({ source:"Base game" }, SWORD_DEF) ];
   Registry.nextbots = [];
   Registry.bots = [];
   Registry.mods.forEach(function(m){
@@ -1171,6 +1332,14 @@ var renderer = new THREE.WebGLRenderer({ antialias:true, powerPreference:"high-p
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+/* v0.1.4 Halo-style grade: ACES filmic tone mapping + sRGB output give
+   the sun-lit, slightly desaturated sci-fi look. Guarded so an older
+   three.js build without these constants just keeps the old grade. */
+try {
+  if (THREE.ACESFilmicToneMapping != null) renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.12;
+  if (THREE.sRGBEncoding != null) renderer.outputEncoding = THREE.sRGBEncoding;
+} catch(e){}
 if (renderer.xr) renderer.xr.enabled = true; /* OpenXR-ready: session hook lives on the home screen */
 container.appendChild(renderer.domElement);
 
@@ -1185,10 +1354,62 @@ var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeigh
 var rig = new THREE.Group(); scene.add(rig); rig.add(camera);
 var hemi = new THREE.HemisphereLight(0xdfe8f2, 0x2c2f33, 0.75); scene.add(hemi);
 var sun = new THREE.DirectionalLight(0xfff2dd, 0.95);
-sun.position.set(18, 30, 12); sun.castShadow = true;
+sun.position.set(38, 55, 24); sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048);
-sun.shadow.camera.left = -40; sun.shadow.camera.right = 40; sun.shadow.camera.top = 40; sun.shadow.camera.bottom = -40;
-scene.add(sun); scene.add(new THREE.AmbientLight(0xffffff, 0.12));
+sun.shadow.camera.left = -68; sun.shadow.camera.right = 68; sun.shadow.camera.top = 68; sun.shadow.camera.bottom = -68;
+sun.shadow.camera.far = 160; sun.shadow.bias = -0.0006;
+scene.add(sun); scene.add(sun.target); scene.add(new THREE.AmbientLight(0xffffff, 0.12));
+
+/* ---------------- Halo sky (v0.1.4) ----------------
+   One gradient dome + a ringed planet + soft cloud billboards, shared
+   by every map — the Halo signature sky. The dome follows the camera
+   (in the animate loop) so it never gets closer; the planet sits high
+   in the sun's direction. Cheap: three canvas textures, ~10 sprites. */
+var skyGroup = new THREE.Group(); scene.add(skyGroup);
+var cloudSprites = [];
+(function buildSky(){
+  var c = document.createElement("canvas"); c.width = 64; c.height = 512;
+  var g = c.getContext("2d");
+  var grad = g.createLinearGradient(0, 0, 0, 512);
+  grad.addColorStop(0, "#2e6db4"); grad.addColorStop(0.42, "#6fa8d8");
+  grad.addColorStop(0.72, "#bcd9ea"); grad.addColorStop(0.92, "#e8ddc4"); grad.addColorStop(1, "#d9c9a8");
+  g.fillStyle = grad; g.fillRect(0, 0, 64, 512);
+  var domeTex = new THREE.CanvasTexture(c);
+  var dome = new THREE.Mesh(new THREE.SphereGeometry(260, 24, 16),
+    new THREE.MeshBasicMaterial({ map: domeTex, side: THREE.BackSide, fog: false, depthWrite: false }));
+  dome.renderOrder = -10;
+  skyGroup.add(dome);
+  /* Ringed planet: a banded sphere with a tilted flat ring. */
+  var pc = document.createElement("canvas"); pc.width = pc.height = 128;
+  var pg = pc.getContext("2d");
+  var pgrad = pg.createLinearGradient(0, 0, 0, 128);
+  pgrad.addColorStop(0, "#cfe3ee"); pgrad.addColorStop(0.35, "#9fc0d4"); pgrad.addColorStop(0.55, "#e6ddc8");
+  pgrad.addColorStop(0.75, "#8fb0c6"); pgrad.addColorStop(1, "#d8e6ee");
+  pg.fillStyle = pgrad; pg.fillRect(0, 0, 128, 128);
+  pg.fillStyle = "rgba(120,90,60,0.25)"; pg.fillRect(0, 58, 128, 7); pg.fillRect(0, 84, 128, 4);
+  var planet = new THREE.Mesh(new THREE.SphereGeometry(26, 24, 18),
+    new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(pc), fog: false }));
+  planet.position.set(120, 105, -190);
+  skyGroup.add(planet);
+  var ring = new THREE.Mesh(new THREE.RingGeometry(34, 58, 48),
+    new THREE.MeshBasicMaterial({ color: 0xdfe9f0, transparent: true, opacity: 0.4, side: THREE.DoubleSide, fog: false, depthWrite: false }));
+  ring.position.copy(planet.position); ring.rotation.x = Math.PI / 2.4; ring.rotation.y = 0.4;
+  skyGroup.add(ring);
+  /* Clouds: soft radial-gradient billboards scattered high up. */
+  var cc = document.createElement("canvas"); cc.width = cc.height = 128;
+  var cg = cc.getContext("2d");
+  var cgrad = cg.createRadialGradient(64, 64, 6, 64, 64, 62);
+  cgrad.addColorStop(0, "rgba(255,255,255,0.85)"); cgrad.addColorStop(0.6, "rgba(255,255,255,0.38)"); cgrad.addColorStop(1, "rgba(255,255,255,0)");
+  cg.fillStyle = cgrad; cg.fillRect(0, 0, 128, 128);
+  var cloudTex = new THREE.CanvasTexture(cc);
+  for (var i = 0; i < 11; i++){
+    var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: cloudTex, transparent: true, opacity: 0.5 + Math.random() * 0.3, fog: false, depthWrite: false }));
+    var ang = Math.random() * Math.PI * 2, rad = 120 + Math.random() * 110;
+    sp.position.set(Math.cos(ang) * rad, 62 + Math.random() * 55, Math.sin(ang) * rad);
+    sp.scale.set(55 + Math.random() * 60, 13 + Math.random() * 10, 1);
+    skyGroup.add(sp); cloudSprites.push(sp);
+  }
+})();
 
 function gridTexture(hex){
   var c = document.createElement("canvas"); c.width = c.height = 256;
@@ -1277,6 +1498,52 @@ function farmTexture(name){
     for (i=0;i<60;i++){ g.strokeStyle = "rgba(255,255,255," + (0.05 + Math.random()*0.12) + ")"; g.lineWidth = 1.5;
       x = Math.random()*256; y = Math.random()*256; var wl = 14 + Math.random()*30;
       g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + wl/2, y - 3, x + wl, y); g.stroke(); }
+  } else if (name === "concrete"){
+    /* Halo-style concrete: warm grey panels, grime streaks, variation. */
+    g.fillStyle = "#8b8d89"; g.fillRect(0,0,256,256);
+    speckle(g, 256, ["#7c7e7a","#9a9c97","#6f716d","#a5a7a2"], 800, 1, 4);
+    g.fillStyle = "rgba(0,0,0,0.20)"; g.fillRect(0, 0, 256, 3); g.fillRect(0, 0, 3, 256);
+    g.fillStyle = "rgba(255,255,255,0.08)"; g.fillRect(0, 3, 256, 2); g.fillRect(3, 0, 2, 256);
+    for (i=0;i<26;i++){ g.fillStyle = "rgba(40,38,34," + (0.04 + Math.random()*0.09) + ")";
+      x = Math.random()*256; g.fillRect(x, Math.random()*120, 2 + Math.random()*5, 60 + Math.random()*140); }
+    for (i=0;i<8;i++){ g.fillStyle = "rgba(0,0,0,0.35)"; g.beginPath(); g.arc(24 + (i%4)*72, 24 + Math.floor(i/4)*180, 2.2, 0, 7); g.fill(); }
+  } else if (name === "metalpanel"){
+    /* Brushed sci-fi metal panelling with seams and rivets. */
+    g.fillStyle = "#77808a"; g.fillRect(0,0,256,256);
+    speckle(g, 256, ["#6a727c","#848c96","#5f6771"], 420, 1, 3);
+    for (x=0; x<256; x+=64){ g.fillStyle = "rgba(0,0,0,0.28)"; g.fillRect(x, 0, 2, 256); g.fillStyle = "rgba(255,255,255,0.10)"; g.fillRect(x+2, 0, 2, 256); }
+    for (y=0; y<256; y+=64){ g.fillStyle = "rgba(0,0,0,0.28)"; g.fillRect(0, y, 256, 2); g.fillStyle = "rgba(255,255,255,0.10)"; g.fillRect(0, y+2, 256, 2); }
+    g.fillStyle = "rgba(20,22,26,0.5)";
+    for (y=32; y<256; y+=64) for (x=32; x<256; x+=64){ g.beginPath(); g.arc(x, y, 2, 0, 7); g.fill(); }
+    g.fillStyle = "rgba(255,179,92,0.20)"; g.fillRect(0, 120, 256, 10);
+  } else if (name === "glasswin"){
+    /* Tower glass: dark blue-grey curtain wall with a grid of windows,
+       about half of them lit warm amber or cool cyan. */
+    g.fillStyle = "#2c3844"; g.fillRect(0,0,256,256);
+    for (y=8; y<248; y+=30){
+      for (x=8; x<248; x+=26){
+        var lit = Math.random();
+        if (lit < 0.34) g.fillStyle = "#ffca7a";
+        else if (lit < 0.46) g.fillStyle = "#a8e6e0";
+        else if (lit < 0.60) g.fillStyle = "#e8eef2";
+        else g.fillStyle = "#46586a";
+        g.globalAlpha = 0.55 + Math.random()*0.45;
+        g.fillRect(x, y, 17, 20);
+        g.globalAlpha = 1;
+      }
+    }
+    g.fillStyle = "rgba(0,0,0,0.4)";
+    for (y=0; y<256; y+=30) g.fillRect(0, y, 256, 2);
+    for (x=0; x<256; x+=26) g.fillRect(x, 0, 2, 256);
+    var grad = g.createLinearGradient(0, 0, 256, 256);
+    grad.addColorStop(0, "rgba(255,255,255,0.14)"); grad.addColorStop(0.5, "rgba(255,255,255,0)");
+    g.fillStyle = grad; g.fillRect(0, 0, 256, 256);
+  } else if (name === "asphalt"){
+    g.fillStyle = "#33373c"; g.fillRect(0,0,256,256);
+    speckle(g, 256, ["#2b2f34","#3d4148","#26292e","#484d55"], 1100, 1, 3);
+    for (i=0;i<14;i++){ g.strokeStyle = "rgba(0,0,0," + (0.08 + Math.random()*0.12) + ")"; g.lineWidth = 1 + Math.random()*2;
+      x = Math.random()*256; y = Math.random()*256;
+      g.beginPath(); g.moveTo(x, y); g.lineTo(x + (Math.random()*40-20), y + (Math.random()*40-20)); g.stroke(); }
   }
   var t = new THREE.CanvasTexture(c);
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
@@ -1296,6 +1563,7 @@ function boxMaterial(b){
 
 /* ---------------- Map building ---------------- */
 var worldGroup = null, statics = [], dynamics = [], stickmen = [], nextbots = [], bots = [], puffs = [], tracers = [];
+var vehicles = [], drivingVehicle = null; /* v0.1.4 vehicles (see the vehicle system below) */
 var spinners = []; /* map detail meshes rotated every frame (the Farm windmill rotor) */
 var currentMap = null, floorHalf = 32;
 
@@ -1378,6 +1646,7 @@ function clearWorld(){
   if (worldGroup){ scene.remove(worldGroup); worldGroup.traverse(function(o){ if (o.geometry) o.geometry.dispose(); }); }
   worldGroup = new THREE.Group(); scene.add(worldGroup);
   statics = []; dynamics = []; stickmen = []; nextbots = []; bots = []; puffs = []; spinners = [];
+  vehicles = []; drivingVehicle = null;
   tracers.forEach(function(t){ scene.remove(t.mesh); }); tracers = [];
   heldBody = null; heldPoint = null;
 }
@@ -1535,12 +1804,88 @@ function buildFarmDetails(def){
   });
 }
 
+/* ---------------- City map details (v0.1.4) ----------------
+   Roads with lane markings, the plaza + ring monument, streetlights
+   and parked vehicles for defs flagged city:true. Roads/plaza are
+   flat decals; parked cars and the monument pillar are statics. */
+function buildCityDetails(def){
+  if (!def.city) return;
+  (def.roads || []).forEach(function(r){
+    var isNS = r.dir === "ns";
+    var geo = new THREE.PlaneGeometry(isNS ? r.w : r.l, isNS ? r.l : r.w); geo.rotateX(-Math.PI / 2);
+    var road = new THREE.Mesh(geo, texMat("asphalt", isNS ? 3 : Math.round(r.l / 4), isNS ? Math.round(r.l / 4) : 3));
+    road.position.set(r.x, 0.02, r.z); road.receiveShadow = true;
+    worldGroup.add(road);
+    /* dashed centre line */
+    var dashMat = new THREE.MeshBasicMaterial({ color: 0xe8e4d2 });
+    var nDash = Math.floor(r.l / 8);
+    for (var i = 0; i < nDash; i++){
+      var off = -r.l / 2 + 4 + i * 8;
+      var dg = new THREE.PlaneGeometry(isNS ? 0.22 : 2.6, isNS ? 2.6 : 0.22); dg.rotateX(-Math.PI / 2);
+      var dash = new THREE.Mesh(dg, dashMat);
+      dash.position.set(r.x + (isNS ? 0 : off), 0.035, r.z + (isNS ? off : 0));
+      worldGroup.add(dash);
+    }
+    /* edge lines */
+    [-1, 1].forEach(function(sgn){
+      var eg = new THREE.PlaneGeometry(isNS ? 0.18 : r.l, isNS ? r.l : 0.18); eg.rotateX(-Math.PI / 2);
+      var edge = new THREE.Mesh(eg, dashMat);
+      edge.position.set(r.x + (isNS ? sgn * (r.w / 2 - 0.5) : 0), 0.033, r.z + (isNS ? 0 : sgn * (r.w / 2 - 0.5)));
+      worldGroup.add(edge);
+    });
+  });
+  if (def.plaza){
+    var disc = new THREE.Mesh(new THREE.CircleGeometry(def.plaza.r, 40), texMat("concrete", 6, 6));
+    disc.rotation.x = -Math.PI / 2; disc.position.set(def.plaza.x, 0.045, def.plaza.z); disc.receiveShadow = true;
+    worldGroup.add(disc);
+    /* Ring monument: a pillar with a glowing vertical ring on top. */
+    var pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 1.0, 4.6, 12), texMat("metalpanel", 2, 2));
+    pillar.position.set(def.plaza.x, 2.3, def.plaza.z); pillar.castShadow = true;
+    worldGroup.add(pillar);
+    statics.push({ kind: "box", cx: def.plaza.x, cz: def.plaza.z, w: 1.6, d: 1.6, base: 0, top: 4.6, h: 4.6, mesh: pillar });
+    var ringM = new THREE.Mesh(new THREE.TorusGeometry(2.6, 0.22, 10, 36),
+      new THREE.MeshStandardMaterial({ color: 0x9adcd8, emissive: 0x2fbdb4, emissiveIntensity: 1.4, roughness: 0.3, metalness: 0.6 }));
+    ringM.position.set(def.plaza.x, 7.6, def.plaza.z); ringM.castShadow = true;
+    ringM.userData.spinY = true;
+    worldGroup.add(ringM); spinners.push(ringM);
+    var ringGlow = new THREE.PointLight(0x53e6e0, 0.7, 18);
+    ringGlow.position.set(def.plaza.x, 7.6, def.plaza.z);
+    worldGroup.add(ringGlow);
+  }
+  (def.streetlights || []).forEach(function(lp){
+    var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 4.4, 8), mat("#3a4046", 0.6));
+    pole.position.set(lp[0], 2.2, lp[1]); pole.castShadow = true;
+    worldGroup.add(pole);
+    var lamp = new THREE.Mesh(new THREE.SphereGeometry(0.17, 10, 8),
+      new THREE.MeshBasicMaterial({ color: 0xffd9a0 }));
+    lamp.position.set(lp[0], 4.45, lp[1]);
+    worldGroup.add(lamp);
+    statics.push({ kind: "box", cx: lp[0], cz: lp[1], w: 0.3, d: 0.3, base: 0, top: 4.4, h: 4.4, mesh: pole });
+  });
+  (def.parked || []).forEach(function(pk){
+    var px = pk[0], pz = pk[1], alongZ = pk[2] === 0;
+    var car = new THREE.Group(); car.position.set(px, 0, pz); car.rotation.y = alongZ ? 0 : Math.PI / 2;
+    var paint = mat(["#7a4a26", "#4a6a8a", "#8a8d89", "#5d7a4a", "#8a3a32"][Math.floor(Math.random() * 5)], 0.35);
+    var body = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.55, 4.1), paint); body.position.y = 0.52; body.castShadow = true; car.add(body);
+    var cab = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.5, 2.0), mat("#22282e", 0.25)); cab.position.set(0, 1.0, -0.2); cab.castShadow = true; car.add(cab);
+    var wheelMat = mat("#14161a", 0.9);
+    [[-0.85, 1.35], [0.85, 1.35], [-0.85, -1.35], [0.85, -1.35]].forEach(function(w){
+      var wh = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 0.22, 12), wheelMat);
+      wh.rotation.z = Math.PI / 2; wh.position.set(w[0], 0.34, w[1]); car.add(wh);
+    });
+    var hl = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.12, 0.06), new THREE.MeshBasicMaterial({ color: 0xffe9b0 }));
+    hl.position.set(0, 0.55, -2.06); car.add(hl);
+    worldGroup.add(car);
+    statics.push({ kind: "box", cx: px, cz: pz, w: alongZ ? 1.9 : 4.2, d: alongZ ? 4.2 : 1.9, base: 0, top: 0.85, h: 0.85, mesh: body });
+  });
+}
+
 function buildMap(entry){
   clearWorld();
   var def = entry.def; currentMap = entry;
   floorHalf = (def.floorSize || 64) / 2;
-  scene.background = new THREE.Color(def.sky || "#10161d");
-  scene.fog = new THREE.Fog(new THREE.Color(def.fog || def.sky || "#10161d"), 55, 140);
+  scene.background = null; /* the Halo sky dome (skyGroup) is the sky on every map */
+  scene.fog = new THREE.Fog(new THREE.Color(def.fog || def.sky || "#10161d"), def.fogNear || 55, def.fogFar || 160);
   if (def.light){ sun.intensity = def.light.sun != null ? def.light.sun : 0.95; hemi.intensity = def.light.hemi != null ? def.light.hemi : 0.75; }
   else { sun.intensity = 0.95; hemi.intensity = 0.75; }
   var tex;
@@ -1571,12 +1916,22 @@ function buildMap(entry){
     worldGroup.add(mesh);
     statics.push({ kind:"box", cx:b.pos[0], cz:b.pos[2], w:b.size[0], d:b.size[2], base:b.pos[1]-b.size[1]/2, top:b.pos[1]+b.size[1]/2, h:b.size[1], mesh:mesh });
     if (b.fence) addFencePosts(b);
+    /* Emissive light strip (v0.1.4): a glowing trim line near the top
+       of the structure — the Halo accent light. Pure decoration, no
+       collision, no real light cost. */
+    if (b.strip){
+      var stripMat = new THREE.MeshBasicMaterial({ color: b.strip === "cyan" ? 0x53e6e0 : 0xffb35c });
+      var strip = new THREE.Mesh(new THREE.BoxGeometry(b.size[0] + 0.08, 0.16, b.size[2] + 0.08), stripMat);
+      strip.position.set(b.pos[0], b.pos[1] + b.size[1] / 2 - 0.45, b.pos[2]);
+      worldGroup.add(strip);
+    }
   });
   (def.ramps || []).forEach(function(r){
     var mesh = rampMesh(r); worldGroup.add(mesh);
     statics.push({ kind:"ramp", cx:r.pos[0], cz:r.pos[2], w:r.size[0], d:r.size[2], base:r.pos[1] || 0, h:r.size[1], top:(r.pos[1]||0)+r.size[1], dir:r.dir || 0, mesh:mesh });
   });
   buildFarmDetails(def);
+  buildCityDetails(def);
   /* spawn marker */
   var sp = def.spawn || [0, 8];
   var ring = new THREE.Mesh(new THREE.RingGeometry(0.55, 0.72, 40), new THREE.MeshBasicMaterial({ color: 0xff8c1a, side: THREE.DoubleSide, transparent:true, opacity:0.9 }));
@@ -2279,6 +2634,217 @@ function spawnBot(def, atPos){
   return bot;
 }
 
+/* ---------------- Vehicles (v0.1.4) ----------------
+   Two built-in, spawnable vehicles. Warthog: a 4-wheeled jeep —
+   slower, heavier, wheels spin and steer. Ghost: a hover bike —
+   faster, tighter turning, floats above the ground with a glowing
+   underside. Driving: WASD (or the touch joystick / VR left stick),
+   E (or the touch ENTER/EXIT button) gets in and out, the flat camera
+   becomes a third-person chase camera, and running into a stickman,
+   Kanye or the CSGO Bot at speed runs them down. No mounted guns in
+   this pass — fireWeapon refuses while driving. Vehicles are local
+   to your client, like the CSGO Bot: in multiplayer other players
+   won't see your ride. */
+function buildVehicleMesh(type){
+  var g = new THREE.Group();
+  var hitMeshes = [], wheels = [];
+  function part(geo, material, x, y, z){
+    var m = new THREE.Mesh(geo, material);
+    m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true;
+    g.add(m); hitMeshes.push(m); return m;
+  }
+  if (type === "hog"){
+    var paint = new THREE.MeshStandardMaterial({ color: 0x5d6e46, roughness: 0.55, metalness: 0.35 });
+    var dark = mat("#23262a", 0.7), seatM = mat("#2e2a24", 0.9);
+    part(new THREE.BoxGeometry(1.9, 0.5, 3.6), paint, 0, 0.62, 0);            /* hull */
+    part(new THREE.BoxGeometry(1.7, 0.34, 1.1), paint, 0, 0.95, -1.15);       /* hood */
+    part(new THREE.BoxGeometry(1.8, 0.4, 1.2), paint, 0, 0.92, 1.25);         /* bed */
+    part(new THREE.BoxGeometry(0.09, 0.75, 0.09), dark, -0.8, 1.35, 0.55);     /* roll cage */
+    part(new THREE.BoxGeometry(0.09, 0.75, 0.09), dark, 0.8, 1.35, 0.55);
+    part(new THREE.BoxGeometry(1.7, 0.09, 0.09), dark, 0, 1.72, 0.55);
+    part(new THREE.BoxGeometry(0.09, 0.6, 0.09), dark, -0.8, 1.3, -0.5);
+    part(new THREE.BoxGeometry(0.09, 0.6, 0.09), dark, 0.8, 1.3, -0.5);
+    part(new THREE.BoxGeometry(0.62, 0.5, 0.18), seatM, -0.45, 1.05, 0.62);  /* seats */
+    part(new THREE.BoxGeometry(0.62, 0.5, 0.18), seatM, 0.45, 1.05, 0.62);
+    part(new THREE.BoxGeometry(1.5, 0.13, 0.05), new THREE.MeshBasicMaterial({ color: 0xffe9b0 }), 0, 0.66, -1.83); /* headlights */
+    part(new THREE.BoxGeometry(1.5, 0.1, 0.05), new THREE.MeshBasicMaterial({ color: 0xff5347 }), 0, 0.66, 1.83);
+    var wheelGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.3, 14);
+    var hubGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.32, 10);
+    [[-1.0, -1.25], [1.0, -1.25], [-1.0, 1.25], [1.0, 1.25]].forEach(function(w){
+      var wg = new THREE.Group(); wg.position.set(w[0], 0.42, w[1]);
+      var tire = new THREE.Mesh(wheelGeo, dark); tire.rotation.z = Math.PI / 2; tire.castShadow = true;
+      var hub = new THREE.Mesh(hubGeo, paint); hub.rotation.z = Math.PI / 2;
+      wg.add(tire); wg.add(hub); g.add(wg); wheels.push(wg); hitMeshes.push(tire);
+    });
+    return { group: g, hitMeshes: hitMeshes, wheels: wheels, radius: 1.25, name: "Warthog" };
+  }
+  /* Ghost hover bike */
+  var shell = new THREE.MeshStandardMaterial({ color: 0x6a4a8a, roughness: 0.35, metalness: 0.55 });
+  var shell2 = new THREE.MeshStandardMaterial({ color: 0x4a3262, roughness: 0.4, metalness: 0.5 });
+  part(new THREE.BoxGeometry(0.85, 0.34, 2.6), shell, 0, 0.62, 0);
+  part(new THREE.BoxGeometry(0.6, 0.3, 1.0), shell2, 0, 0.82, -0.7);
+  var nose = part(new THREE.SphereGeometry(0.42, 14, 10), shell, 0, 0.6, -1.35); nose.scale.set(1, 0.72, 1.3);
+  part(new THREE.BoxGeometry(0.5, 0.28, 0.8), mat("#1d1a24", 0.85), 0, 0.86, 0.55); /* seat */
+  part(new THREE.BoxGeometry(0.95, 0.16, 0.5), shell2, 0, 0.5, 1.25);              /* rear wing */
+  var glowM = new THREE.MeshBasicMaterial({ color: 0x53e6e0 });
+  part(new THREE.BoxGeometry(0.6, 0.07, 2.2), glowM, 0, 0.4, 0);                    /* hover glow */
+  part(new THREE.BoxGeometry(0.2, 0.1, 0.06), new THREE.MeshBasicMaterial({ color: 0xaef4ef }), 0, 0.66, -1.78);
+  var glow = new THREE.PointLight(0x53e6e0, 0.5, 4.5); glow.position.set(0, 0.3, 0); g.add(glow);
+  return { group: g, hitMeshes: hitMeshes, wheels: wheels, radius: 0.95, name: "Ghost", glowMat: glowM };
+}
+function spawnVehicle(type){
+  if (vehicles.length >= 6){ toast("Vehicle limit reached (6). Remove spawned objects to clear them."); return null; }
+  var built = buildVehicleMesh(type);
+  var p = spawnPointInFront();
+  built.group.position.set(p.x, groundHeightAt(p.x, p.z, 1000) + (type === "ghost" ? 0.55 : 0), p.z);
+  built.group.rotation.y = player.yaw;
+  worldGroup.add(built.group);
+  var v = { type: type, group: built.group, hitMeshes: built.hitMeshes, wheels: built.wheels,
+    yaw: player.yaw, speed: 0, radius: built.radius, name: built.name, glowMat: built.glowMat || null, t: rand(0, 9) };
+  built.hitMeshes.forEach(function(m){ m.userData.vehicle = v; });
+  vehicles.push(v);
+  AudioSys.pop(); updateCount();
+  return v;
+}
+function nearestVehicle(maxDist){
+  var best = null, bd = maxDist;
+  vehicles.forEach(function(v){
+    var d = v.group.position.distanceTo(player.pos);
+    if (d < bd){ bd = d; best = v; }
+  });
+  return best;
+}
+function enterVehicle(v){
+  if (!v || drivingVehicle) return;
+  drivingVehicle = v;
+  if (heldBody || heldPoint) releaseGrab();
+  if (scoped) setScope(false);
+  player.pos.copy(v.group.position); player.vel.set(0, 0, 0);
+  refreshViewmodelVisibility();
+  AudioSys.ui();
+  toast("Driving the " + v.name + " — " + (IS_TOUCH ? "left stick drives, EXIT gets out." : "WASD drives, E gets out.") + " Run things down at speed.", 3600);
+}
+function exitVehicle(silent){
+  var v = drivingVehicle; if (!v) return;
+  drivingVehicle = null;
+  var s = Math.sin(v.yaw), c = Math.cos(v.yaw);
+  var rx = c, rz = -s; /* right vector, matches the camera convention */
+  var ex = clamp(v.group.position.x + rx * 2.1, -floorHalf + 0.5, floorHalf - 0.5);
+  var ez = clamp(v.group.position.z + rz * 2.1, -floorHalf + 0.5, floorHalf - 0.5);
+  player.pos.set(ex, groundHeightAt(ex, ez, 1000), ez);
+  player.vel.set(0, 0, 0); player.yaw = v.yaw; player.pitch = 0;
+  if (typeof VR !== "undefined" && VR.active){ VR.rigYaw = v.yaw; rig.position.set(ex, player.pos.y, ez); }
+  refreshViewmodelVisibility();
+  if (!silent) AudioSys.ui();
+}
+function ramCheck(v, dt){
+  if (Math.abs(v.speed) < 3.5) return;
+  var vp = v.group.position, now = perfNow();
+  var dir = new THREE.Vector3(-Math.sin(v.yaw), 0, -Math.cos(v.yaw));
+  function rammed(obj){ return obj._ramAt && now - obj._ramAt < 700; }
+  stickmen.forEach(function(sm){
+    if (rammed(sm)) return;
+    var d = Math.sqrt(Math.pow(sm.root.x - vp.x, 2) + Math.pow(sm.root.z - vp.z, 2));
+    if (d < v.radius + 0.6){ sm._ramAt = now; sm.damage(130, new THREE.Vector3(sm.root.x, 1, sm.root.z), dir.clone().multiplyScalar(Math.abs(v.speed) * 0.9)); spawnSparks(new THREE.Vector3(sm.root.x, 1, sm.root.z), 8); AudioSys.thud(0.5); }
+  });
+  bots.forEach(function(bt){
+    if (bt.dead || bt.gone || rammed(bt)) return;
+    var d = Math.sqrt(Math.pow(bt.pos.x - vp.x, 2) + Math.pow(bt.pos.z - vp.z, 2));
+    if (d < v.radius + 0.6){ bt._ramAt = now; bt.damage(130); spawnSparks(new THREE.Vector3(bt.pos.x, 1.2, bt.pos.z), 8); AudioSys.thud(0.5); toast("Ran down the " + bt.def.name + "!"); }
+  });
+  nextbots.forEach(function(nb){
+    if (nb.dead || nb.gone || nb.remotePuppet || rammed(nb)) return;
+    if (typeof MP !== "undefined" && MP.active && !MP.isHost) return;
+    var d = Math.sqrt(Math.pow(nb.pos.x - vp.x, 2) + Math.pow(nb.pos.z - vp.z, 2));
+    if (d < v.radius + 0.6){ nb._ramAt = now; nb.damage(130); spawnSparks(new THREE.Vector3(nb.pos.x, 1.2, nb.pos.z), 8); AudioSys.thud(0.5); toast("Ran down the " + nb.def.name + "!"); }
+  });
+  if (typeof MP !== "undefined" && MP.active){
+    Object.keys(MP.peers).forEach(function(pid){
+      var pr = MP.peers[pid]; if (!pr || pr.dead) return;
+      var d = pr.target.distanceTo(vp);
+      if (d < v.radius + 0.7 && now - (pr._ramAt || 0) > 1200){
+        pr._ramAt = now;
+        mpPublishEvent({ t: "hit", to: pid, dmg: 100, part: "body", by: MP.playerName });
+      }
+    });
+  }
+  /* Props get shoved out of the way. */
+  dynamics.forEach(function(b){
+    var d = b.mesh.position.distanceTo(vp);
+    if (d < v.radius + b.radius + 0.3){
+      b.vel.addScaledVector(dir, Math.abs(v.speed) * 0.85); b.vel.y += 2.2;
+    }
+  });
+}
+function updateVehicle(dt){
+  var v = drivingVehicle; if (!v) return;
+  v.t += dt;
+  var f = 0, r = 0;
+  if (typeof VR !== "undefined" && VR.active){ f = vrMove.f; r = vrMove.r; }
+  else {
+    f = (keysDown[Settings.keys.forward] ? 1 : 0) - (keysDown[Settings.keys.back] ? 1 : 0);
+    r = (keysDown[Settings.keys.right] ? 1 : 0) - (keysDown[Settings.keys.left] ? 1 : 0);
+  }
+  var isGhost = v.type === "ghost";
+  var maxF = isGhost ? 20 : 14, maxR = isGhost ? -7 : -5.5;
+  var accel = isGhost ? 17 : 10.5;
+  if (f > 0) v.speed += accel * dt * f;
+  else if (f < 0) v.speed += (v.speed > 0.5 ? -20 * dt : accel * 0.7 * dt * f); /* brake, then reverse */
+  else v.speed -= v.speed * Math.min(1, (isGhost ? 0.7 : 1.1) * dt);
+  v.speed = clamp(v.speed, maxR, maxF);
+  if (Math.abs(v.speed) < 0.04 && !f) v.speed = 0;
+  var steerAuthority = isGhost ? (0.45 + 0.55 * Math.min(1, Math.abs(v.speed) / 7)) : clamp(Math.abs(v.speed) / 4, 0, 1.25);
+  v.yaw -= r * dt * (isGhost ? 2.1 : 1.55) * steerAuthority * (v.speed < 0 ? -1 : 1);
+  var pos = v.group.position;
+  var fx = -Math.sin(v.yaw), fz = -Math.cos(v.yaw);
+  var beforeX = pos.x, beforeZ = pos.z;
+  pos.x += fx * v.speed * dt; pos.z += fz * v.speed * dt;
+  pos.x = clamp(pos.x, -floorHalf + v.radius, floorHalf - v.radius);
+  pos.z = clamp(pos.z, -floorHalf + v.radius, floorHalf - v.radius);
+  pushOutOfStatics(pos, v.radius * 0.82, pos.y);
+  if ((Math.abs(pos.x - beforeX) < Math.abs(fx * v.speed * dt) * 0.25 && Math.abs(fx * v.speed) > 0.5) ||
+      (Math.abs(pos.z - beforeZ) < Math.abs(fz * v.speed * dt) * 0.25 && Math.abs(fz * v.speed) > 0.5)){
+    if (Math.abs(v.speed) > 6){ AudioSys.thud(0.45); spawnSparks(new THREE.Vector3(pos.x + fx * v.radius, 0.8, pos.z + fz * v.radius), 7); }
+    v.speed *= 0.35;
+  }
+  var gy = groundHeightAt(pos.x, pos.z, pos.y + 1.4);
+  pos.y = isGhost ? gy + 0.55 + Math.sin(v.t * 2.2) * 0.06 : gy;
+  v.group.rotation.y = v.yaw;
+  v.group.rotation.z = isGhost ? -r * 0.14 * steerAuthority : 0;
+  v.group.rotation.x = isGhost ? clamp(-v.speed * 0.006, -0.08, 0.12) : 0;
+  v.wheels.forEach(function(w){ w.rotation.x += v.speed * dt / 0.42; });
+  if (v.wheels.length >= 2 && !isGhost){ v.wheels[0].rotation.y = -r * 0.4; v.wheels[1].rotation.y = -r * 0.4; }
+  ramCheck(v, dt);
+  /* The player rides at the vehicle's position: bots and Kanye aim
+     at the vehicle, and the HUD/health systems keep working. */
+  player.pos.set(pos.x, gy, pos.z); player.vel.set(0, 0, 0); player.yaw = v.yaw;
+  if (typeof VR !== "undefined" && VR.active){
+    rig.position.set(pos.x, gy, pos.z);
+    return;
+  }
+  /* Third-person chase camera (flat screen). */
+  var back = new THREE.Vector3(pos.x - fx * 7.6, pos.y + 3.2, pos.z - fz * 7.6);
+  var k = 1 - Math.pow(0.0001, dt);
+  camera.position.lerp(back, k);
+  camera.rotation.order = "YXZ";
+  camera.lookAt(pos.x + fx * 5, pos.y + 1.3, pos.z + fz * 5);
+  player.pitch = 0;
+}
+/* Parked vehicles settle onto the ground (spawned mid-air in front
+   of the player, or left on a ramp). */
+function stepVehicles(dt){
+  vehicles.forEach(function(v){
+    if (v === drivingVehicle) return;
+    v.t += dt;
+    var p = v.group.position;
+    var gy = groundHeightAt(p.x, p.z, p.y + 1.4);
+    var target = v.type === "ghost" ? gy + 0.55 + Math.sin(v.t * 2.2) * 0.06 : gy;
+    p.y += (target - p.y) * Math.min(1, dt * 8);
+    if (v.glowMat) v.glowMat.color.setHSL(0.47, 0.75, 0.55 + Math.sin(v.t * 3) * 0.1);
+  });
+  if (drivingVehicle && drivingVehicle.glowMat) drivingVehicle.glowMat.color.setHSL(0.47, 0.75, 0.6 + Math.sin(drivingVehicle.t * 6) * 0.12);
+}
+
 function perfNow(){ return performance.now(); }
 
 /* ---------------- Player ---------------- */
@@ -2554,19 +3120,118 @@ var knifeViewmodel = new THREE.Group(); camera.add(knifeViewmodel);
   knifeViewmodel.rotation.set(0.12, -0.18, 0.1);
   knifeViewmodel.visible = false;
 })();
+/* v0.1.4 viewmodels — Battle Rifle, Sniper Rifle, Shotgun, Energy
+   Sword. Each is a distinct silhouette built from the same box/cylinder
+   kit as the Glock and AK; guns carry their own muzzle-flash planes in
+   userData.flash so shotEffects lights the right barrel. */
+function vmFlash(group, x, y, z, size){
+  var flashMat = new THREE.MeshBasicMaterial({ color: 0xffc46b, transparent: true, opacity: 0.95, side: THREE.DoubleSide, depthWrite: false });
+  var f1 = new THREE.Mesh(new THREE.PlaneGeometry(size, size), flashMat);
+  f1.position.set(x, y, z); f1.visible = false;
+  var f2 = f1.clone(); f2.rotation.z = Math.PI / 2;
+  group.add(f1, f2);
+  group.userData.flash = [f1, f2];
+}
+function vmMetal(color, rough, metal){ return new THREE.MeshStandardMaterial({ color: color, roughness: rough, metalness: metal }); }
+var brViewmodel = new THREE.Group(); camera.add(brViewmodel);
+(function buildBRViewmodel(){
+  var body = vmMetal(0x3a4149, 0.45, 0.55), dark = vmMetal(0x1d2126, 0.5, 0.45), accent = vmMetal(0x8a5a20, 0.5, 0.3);
+  function p(geo, m, x, y, z, rx){ var mm = new THREE.Mesh(geo, m); mm.position.set(x, y, z); if (rx) mm.rotation.x = rx; brViewmodel.add(mm); return mm; }
+  p(new THREE.BoxGeometry(0.08, 0.11, 0.52), body, 0, 0.02, -0.14);
+  p(new THREE.BoxGeometry(0.05, 0.05, 0.34), dark, 0, 0.045, -0.52);
+  var bl = p(new THREE.CylinderGeometry(0.014, 0.014, 0.3, 10), dark, 0, 0.04, -0.72); bl.rotation.x = Math.PI / 2;
+  p(new THREE.BoxGeometry(0.055, 0.16, 0.09), dark, 0, -0.13, -0.1, 0.12); /* straight mag */
+  p(new THREE.BoxGeometry(0.06, 0.14, 0.08), body, 0, -0.1, 0.1, 0.3);   /* grip */
+  p(new THREE.BoxGeometry(0.055, 0.07, 0.2), body, 0, 0.0, 0.26);        /* stock */
+  p(new THREE.BoxGeometry(0.07, 0.035, 0.3), accent, 0, 0.095, -0.16);   /* carry handle */
+  p(new THREE.CylinderGeometry(0.02, 0.02, 0.14, 10), dark, 0, 0.125, -0.3).rotation.z = Math.PI / 2; /* scope tube */
+  p(new THREE.BoxGeometry(0.012, 0.03, 0.012), dark, 0, 0.1, -0.8);
+  vmFlash(brViewmodel, 0, 0.04, -0.92, 0.3);
+  brViewmodel.position.set(0.26, -0.24, -0.5); brViewmodel.visible = false;
+})();
+var sniperViewmodel = new THREE.Group(); camera.add(sniperViewmodel);
+(function buildSniperViewmodel(){
+  var body = vmMetal(0x2c3138, 0.5, 0.5), dark = vmMetal(0x14161a, 0.5, 0.4), wood = vmMetal(0x54432c, 0.7, 0.1);
+  function p(geo, m, x, y, z, rx){ var mm = new THREE.Mesh(geo, m); mm.position.set(x, y, z); if (rx) mm.rotation.x = rx; sniperViewmodel.add(mm); return mm; }
+  p(new THREE.BoxGeometry(0.075, 0.1, 0.44), body, 0, 0.02, -0.1);
+  var bl = p(new THREE.CylinderGeometry(0.013, 0.013, 0.62, 10), dark, 0, 0.045, -0.6); bl.rotation.x = Math.PI / 2;
+  p(new THREE.BoxGeometry(0.05, 0.05, 0.1), dark, 0, 0.05, -0.88);       /* muzzle brake */
+  p(new THREE.BoxGeometry(0.05, 0.11, 0.08), dark, 0, -0.1, -0.06, 0.1); /* mag */
+  p(new THREE.BoxGeometry(0.06, 0.15, 0.09), wood, 0, -0.1, 0.12, 0.3);  /* grip */
+  p(new THREE.BoxGeometry(0.06, 0.09, 0.26), wood, 0, 0.0, 0.3);         /* stock */
+  var sc = p(new THREE.CylinderGeometry(0.026, 0.026, 0.2, 12), dark, 0, 0.115, -0.14); sc.rotation.x = Math.PI / 2; /* big scope */
+  p(new THREE.CylinderGeometry(0.032, 0.032, 0.03, 12), dark, 0, 0.115, -0.25).rotation.x = Math.PI / 2;
+  p(new THREE.BoxGeometry(0.02, 0.02, 0.07), dark, 0.06, 0.03, 0.02);    /* bolt handle */
+  vmFlash(sniperViewmodel, 0, 0.05, -0.98, 0.42);
+  sniperViewmodel.position.set(0.25, -0.23, -0.52); sniperViewmodel.visible = false;
+})();
+var shotgunViewmodel = new THREE.Group(); camera.add(shotgunViewmodel);
+(function buildShotgunViewmodel(){
+  var body = vmMetal(0x33302c, 0.5, 0.5), dark = vmMetal(0x17181a, 0.5, 0.4), wood = vmMetal(0x7a4a26, 0.75, 0.05);
+  function p(geo, m, x, y, z, rx){ var mm = new THREE.Mesh(geo, m); mm.position.set(x, y, z); if (rx) mm.rotation.x = rx; shotgunViewmodel.add(mm); return mm; }
+  p(new THREE.BoxGeometry(0.08, 0.1, 0.4), body, 0, 0.02, -0.08);
+  var bl = p(new THREE.CylinderGeometry(0.02, 0.02, 0.44, 12), dark, 0, 0.055, -0.48); bl.rotation.x = Math.PI / 2; /* fat barrel */
+  var tb = p(new THREE.CylinderGeometry(0.016, 0.016, 0.4, 10), dark, 0, 0.005, -0.46); tb.rotation.x = Math.PI / 2; /* mag tube */
+  p(new THREE.BoxGeometry(0.07, 0.07, 0.2), wood, 0, -0.01, -0.42);      /* pump grip */
+  p(new THREE.BoxGeometry(0.055, 0.12, 0.07), dark, 0, -0.11, 0.02, 0.15);
+  p(new THREE.BoxGeometry(0.06, 0.09, 0.24), wood, 0, 0.0, 0.26);        /* stock */
+  p(new THREE.BoxGeometry(0.014, 0.035, 0.014), dark, 0, 0.095, -0.66);  /* bead sight */
+  vmFlash(shotgunViewmodel, 0, 0.055, -0.76, 0.44);
+  shotgunViewmodel.position.set(0.26, -0.24, -0.5); shotgunViewmodel.visible = false;
+})();
+var swordViewmodel = new THREE.Group(); camera.add(swordViewmodel);
+(function buildSwordViewmodel(){
+  var gripM = vmMetal(0x2a2d31, 0.45, 0.6);
+  function p(geo, m, x, y, z, rx){ var mm = new THREE.Mesh(geo, m); mm.position.set(x, y, z); if (rx) mm.rotation.x = rx; swordViewmodel.add(mm); return mm; }
+  p(new THREE.BoxGeometry(0.045, 0.2, 0.06), gripM, 0, -0.08, 0.05, 0.3); /* handle */
+  /* The energy blade: two glowing prongs with a bright core between
+     them — MeshBasicMaterial so it glows regardless of scene light. */
+  var bladeM = new THREE.MeshBasicMaterial({ color: 0x53e6e0 });
+  var coreM = new THREE.MeshBasicMaterial({ color: 0xeafffd, transparent: true, opacity: 0.75 });
+  p(new THREE.BoxGeometry(0.014, 0.05, 0.52), bladeM, -0.026, 0.06, -0.3);
+  p(new THREE.BoxGeometry(0.014, 0.05, 0.52), bladeM, 0.026, 0.06, -0.3);
+  p(new THREE.BoxGeometry(0.04, 0.028, 0.5), coreM, 0, 0.06, -0.3);
+  var tipL = p(new THREE.BoxGeometry(0.014, 0.05, 0.12), bladeM, -0.02, 0.06, -0.6); tipL.rotation.y = 0.35;
+  var tipR = p(new THREE.BoxGeometry(0.014, 0.05, 0.12), bladeM, 0.02, 0.06, -0.6); tipR.rotation.y = -0.35;
+  var glow = new THREE.PointLight(0x53e6e0, 0.55, 2.6); glow.position.set(0, 0.06, -0.3); swordViewmodel.add(glow);
+  swordViewmodel.position.set(0.27, -0.25, -0.44); swordViewmodel.rotation.set(0.1, -0.15, 0.08);
+  swordViewmodel.visible = false;
+})();
+/* Every weapon's viewmodel group by weapon id — equipWeapon shows
+   exactly one, shotEffects finds its flash, VR mounts them all. */
+var VM_BY_ID = { glock17: viewmodel, ak47: akViewmodel, knife: knifeViewmodel,
+  battlerifle: brViewmodel, sniper: sniperViewmodel, shotgun: shotgunViewmodel, energysword: swordViewmodel };
+var ALL_VIEWMODELS = [viewmodel, akViewmodel, knifeViewmodel, brViewmodel, sniperViewmodel, shotgunViewmodel, swordViewmodel];
 var flashLight = new THREE.PointLight(0xffb35c, 0, 9); scene.add(flashLight);
 
-var weapon = null; /* { def, mag, reserve, lastShot, reloading, reloadEnd } */
+var weapon = null; /* { def, mag, reserve, lastShot, reloading, reloadEnd, swingStart, burstLeft, burstAt, burstAim } */
 var recoil = 0, bobT = 0;
+var scoped = false; /* Sniper Rifle right-click zoom (flat screen) */
+function refreshViewmodelVisibility(){
+  if (!weapon) return;
+  var active = VM_BY_ID[weapon.def.id] || (weapon.def.kind === "melee" ? knifeViewmodel : viewmodel);
+  var driving = (typeof drivingVehicle !== "undefined" && drivingVehicle);
+  ALL_VIEWMODELS.forEach(function(g){ g.visible = (g === active) && !scoped && !driving; });
+}
+function setScope(on){
+  if (typeof VR !== "undefined" && VR.active) on = false;
+  if (!weapon || !weapon.def.scope) on = false;
+  scoped = !!on;
+  camera.fov = scoped ? 16 : 75;
+  camera.updateProjectionMatrix();
+  var ov = $("scope-overlay"); if (ov) ov.classList.toggle("hidden", !scoped);
+  var tb = $("t-scope"); if (tb) tb.classList.toggle("active", scoped);
+  refreshViewmodelVisibility();
+}
 function equipWeapon(def){
   if (!def) return;
-  weapon = { def: def, mag: def.mag, reserve: def.reserve, lastShot: 0, reloading: false, reloadEnd: 0, swingStart: 0 };
-  var isAk = def.id === "ak47";
-  var isKnife = def.kind === "melee";
-  viewmodel.visible = !isAk && !isKnife;
-  akViewmodel.visible = isAk;
-  knifeViewmodel.visible = isKnife;
-  if (!isAk && !isKnife) vmParts.mats[0].color.set(def.color || "#23272b");
+  if (scoped) setScope(false);
+  weapon = { def: def, mag: def.mag, reserve: def.reserve, lastShot: 0, reloading: false, reloadEnd: 0, swingStart: 0, burstLeft: 0, burstAt: 0, burstAim: null };
+  if (!VM_BY_ID[def.id] && def.kind !== "melee") vmParts.mats[0].color.set(def.color || "#23272b");
+  /* Energy Sword hum runs only while the sword is in hand. */
+  if (def.id === "energysword"){ AudioSys.init(); AudioSys.swordHumStart(); }
+  else AudioSys.swordHumStop();
+  refreshViewmodelVisibility();
   $("hud-weapon").textContent = def.name.toUpperCase();
   updateAmmoHud(); renderSpawnMenu();
 }
@@ -2613,7 +3278,7 @@ function cameraAim(){
    A swing that reaches nothing still plays: a whiff. */
 function swingKnife(now, aim){
   weapon.lastShot = now; weapon.swingStart = now;
-  AudioSys.knifeSwing();
+  if (weapon.def.id === "energysword") AudioSys.swordSwing(); else AudioSys.knifeSwing();
   var range = weapon.def.range || 2.2;
   var dmg = weapon.def.damage;
   var a = aim || cameraAim();
@@ -2622,7 +3287,7 @@ function swingKnife(now, aim){
   function applyHit(kind, ref, point, part){
     if (hitDone) return;
     hitDone = true;
-    AudioSys.knifeHit();
+    if (weapon.def.id === "energysword") AudioSys.swordHit(); else AudioSys.knifeHit();
     showHitmarker();
     if (kind === "peer"){
       mpPublishEvent({ t: "hit", to: ref, dmg: Math.round(dmg), part: part || "body", by: MP.playerName });
@@ -2675,25 +3340,44 @@ function swingKnife(now, aim){
   dynamics.forEach(function(b){ consider("prop", b, b.mesh.position, b.radius || 0.3); });
   if (best) applyHit(best.kind, best.ref, best.point, "body");
 }
-function fireWeapon(aim){
-  if (!weapon || paused || spawnOpen || playerDead || rotateBlocked) return;
-  var now = perfNow();
-  if (weapon.reloading || now - weapon.lastShot < weapon.def.interval) return;
-  if (weapon.def.kind === "melee"){ swingKnife(now, aim); return; }
-  if (weapon.mag <= 0){ AudioSys.dry(); weapon.lastShot = now; return; }
-  weapon.lastShot = now; weapon.mag--;
-  if (weapon.def.id === "ak47") AudioSys.akShot(); else AudioSys.shot();
-  recoil = Math.min(1, recoil + 0.55 * (weapon.def.recoil || 1));
-  player.pitch = clamp(player.pitch + 0.011 * (weapon.def.recoil || 1), -PITCH_MAX, PITCH_MAX);
-  var activeFlash = (weapon.def.id === "ak47" && akParts.flash) ? akParts.flash : vmParts.flash;
-  activeFlash.forEach(function(f){ f.visible = true; f.rotation.z = rand(0, Math.PI); f.scale.setScalar(rand(0.8, 1.5)); });
-  setTimeout(function(){ activeFlash.forEach(function(f){ f.visible = false; }); }, 45);
-  var muzzle = new THREE.Vector3(); activeFlash[0].getWorldPosition(muzzle);
-  flashLight.position.copy(muzzle); flashLight.intensity = 2.4;
-  /* hitscan — from the camera on the flat screen, from the right
-     controller / hand in VR (the aim passed in). */
-  var a = aim || cameraAim();
-  raycaster.set(a.origin, a.dir);
+/* ---- Firing (v0.1.4): one hitscan resolver for every gun ----
+   hitscanShot resolves a single ray (optionally cone-scattered) with
+   a given damage value, through the exact damage paths the Glock has
+   always used — stickman, Kanye, CSGO Bot, props, multiplayer peers.
+   fireWeapon is the trigger: single shot (Glock / AK / Sniper),
+   3-round burst (Battle Rifle, queued shots processed by
+   processBurst in the main loop), or an 8-pellet cone (Shotgun). */
+function activeFlashFor(def){
+  if (def.id === "ak47" && akParts.flash) return akParts.flash;
+  var vm = VM_BY_ID[def.id];
+  if (vm && vm.userData.flash) return vm.userData.flash;
+  return vmParts.flash;
+}
+function playShotSound(def){
+  if (def.id === "ak47") AudioSys.akShot();
+  else if (def.id === "battlerifle") AudioSys.brShot();
+  else if (def.id === "sniper") AudioSys.sniperShot();
+  else if (def.id === "shotgun") AudioSys.shotgunShot();
+  else AudioSys.shot();
+}
+function shotEffects(def){
+  recoil = Math.min(1, recoil + 0.55 * (def.recoil || 1));
+  player.pitch = clamp(player.pitch + 0.011 * (def.recoil || 1), -PITCH_MAX, PITCH_MAX);
+  var activeFlash = activeFlashFor(def);
+  if (activeFlash && activeFlash[0]){
+    activeFlash.forEach(function(f){ f.visible = true; f.rotation.z = rand(0, Math.PI); f.scale.setScalar(rand(0.8, 1.5)); });
+    setTimeout(function(){ activeFlash.forEach(function(f){ f.visible = false; }); }, 45);
+    var muzzle = new THREE.Vector3(); activeFlash[0].getWorldPosition(muzzle);
+    flashLight.position.copy(muzzle); flashLight.intensity = 2.4;
+  }
+}
+function hitscanShot(a, dmg, spread){
+  var dir = a.dir.clone();
+  if (spread){
+    dir.x += rand(-spread, spread); dir.y += rand(-spread, spread); dir.z += rand(-spread, spread);
+    dir.normalize();
+  }
+  raycaster.set(a.origin, dir);
   raycaster.far = 120;
   var targets = [];
   if (worldGroup) worldGroup.children.forEach(function(o){ if (o !== undefined) targets.push(o); });
@@ -2703,15 +3387,16 @@ function fireWeapon(aim){
   bots.forEach(function(bt){ if (!bt.gone) bt.meshes.forEach(function(m){ targets.push(m); }); });
   if (typeof MP !== "undefined" && MP.active) Object.keys(MP.peers).forEach(function(pid){ var pr = MP.peers[pid]; if (pr && pr.hitMeshes) pr.hitMeshes.forEach(function(m){ targets.push(m); }); });
   statics.forEach(function(s){ targets.push(s.mesh); });
+  vehicles.forEach(function(v){ v.hitMeshes.forEach(function(m){ targets.push(m); }); });
   var hits = raycaster.intersectObjects(targets, false);
-  var dir = a.dir;
   if (hits.length){
     var hit = hits[0];
     spawnPuff(hit.point);
+    spawnSparks(hit.point, 4);
     if (hit.object.userData.peerId){
       /* Multiplayer hit: the victim applies the damage on their own
          client (victim-authoritative), the host is not involved. */
-      var pdmg = weapon.def.damage * (hit.object.userData.part === "head" ? 1.8 : 1);
+      var pdmg = dmg * (hit.object.userData.part === "head" ? 1.8 : 1);
       mpPublishEvent({ t: "hit", to: hit.object.userData.peerId, dmg: Math.round(pdmg), part: hit.object.userData.part, by: MP.playerName });
       showHitmarker();
     } else if (hit.object.userData.nb){
@@ -2719,17 +3404,16 @@ function fireWeapon(aim){
       /* In multiplayer only the host's Kanye takes damage — clients see a
          puppet mirrored from the host, so their hits on it do nothing. */
       if (!(typeof MP !== "undefined" && MP.active && !MP.isHost)){
-        nbHit.damage(weapon.def.damage * (hit.object.userData.part === "head" ? 1.8 : 1));
+        nbHit.damage(dmg * (hit.object.userData.part === "head" ? 1.8 : 1));
       }
       showHitmarker();
     } else if (hit.object.userData.bot){
       var botHit = hit.object.userData.bot;
-      botHit.damage(weapon.def.damage * (hit.object.userData.part === "head" ? 1.8 : 1));
+      botHit.damage(dmg * (hit.object.userData.part === "head" ? 1.8 : 1));
       showHitmarker();
     } else if (hit.object.userData.sm){
       var sm = hit.object.userData.sm;
-      var dmg = weapon.def.damage * (hit.object.userData.part === "head" ? 1.8 : 1);
-      sm.damage(dmg, hit.point, dir.clone().multiplyScalar(3.6));
+      sm.damage(dmg * (hit.object.userData.part === "head" ? 1.8 : 1), hit.point, dir.clone().multiplyScalar(3.6));
       showHitmarker();
     } else if (hit.object.userData.body){
       var b = hit.object.userData.body;
@@ -2745,6 +3429,46 @@ function fireWeapon(aim){
     var along = chest.clone().sub(raycaster.ray.origin).dot(raycaster.ray.direction);
     if (along > 1 && raycaster.ray.distanceToPoint(chest) < 1.6) bt.startDodge();
   });
+}
+function fireWeapon(aim){
+  if (!weapon || paused || spawnOpen || playerDead || rotateBlocked) return;
+  if (typeof drivingVehicle !== "undefined" && drivingVehicle) return; /* no shooting from the driver's seat in this pass */
+  var now = perfNow();
+  if (weapon.reloading || now - weapon.lastShot < weapon.def.interval) return;
+  if (weapon.def.kind === "melee"){ swingKnife(now, aim); return; }
+  if (weapon.mag <= 0){ AudioSys.dry(); weapon.lastShot = now; return; }
+  var a = aim || cameraAim();
+  weapon.lastShot = now;
+  if (weapon.def.burst){
+    /* Battle Rifle: first round now, the rest queued 72 ms apart. */
+    weapon.mag--;
+    playShotSound(weapon.def); shotEffects(weapon.def);
+    hitscanShot(a, weapon.def.damage, 0.004);
+    weapon.burstLeft = Math.min(weapon.def.burst - 1, weapon.mag);
+    weapon.burstAt = now + (weapon.def.burstGap || 72);
+    weapon.burstAim = a;
+  } else if (weapon.def.pellets){
+    /* Shotgun: one shell, a cone of pellets, then the pump. */
+    weapon.mag--;
+    playShotSound(weapon.def); shotEffects(weapon.def);
+    for (var pi = 0; pi < weapon.def.pellets; pi++) hitscanShot(a, weapon.def.damage, weapon.def.spread || 0.05);
+    setTimeout(function(){ AudioSys.shotgunPump(); }, 260);
+  } else {
+    weapon.mag--;
+    playShotSound(weapon.def); shotEffects(weapon.def);
+    hitscanShot(a, weapon.def.damage, 0);
+  }
+  updateAmmoHud();
+}
+/* Battle Rifle burst follow-up rounds, ticked from the main loop. */
+function processBurst(now){
+  if (!weapon || !weapon.burstLeft || weapon.burstLeft <= 0) return;
+  if (now < weapon.burstAt || weapon.reloading) return;
+  if (weapon.mag <= 0){ weapon.burstLeft = 0; return; }
+  weapon.mag--; weapon.burstLeft--;
+  weapon.burstAt = now + (weapon.def.burstGap || 72);
+  playShotSound(weapon.def); shotEffects(weapon.def);
+  hitscanShot(weapon.burstAim || cameraAim(), weapon.def.damage, 0.004);
   updateAmmoHud();
 }
 function showHitmarker(){
@@ -2757,6 +3481,34 @@ function spawnPuff(point){
   var m = new THREE.Mesh(puffGeo, puffMat.clone());
   m.position.copy(point); m.userData.life = 0.28;
   scene.add(m); puffs.push(m);
+}
+/* Impact sparks (v0.1.4): a quick burst of tiny glowing shards with
+   gravity, on top of the dust puff. One shared geometry/material;
+   capped so a shotgun blast cannot flood the scene. */
+var sparks = [];
+var sparkGeo = new THREE.BoxGeometry(0.045, 0.045, 0.045);
+var sparkMat = new THREE.MeshBasicMaterial({ color: 0xffc46b });
+function spawnSparks(point, n){
+  if (sparks.length > 90) return;
+  var count = n || 5;
+  for (var i = 0; i < count; i++){
+    var m = new THREE.Mesh(sparkGeo, sparkMat);
+    m.position.copy(point);
+    m.userData.vel = new THREE.Vector3(rand(-2.4, 2.4), rand(0.5, 3.2), rand(-2.4, 2.4));
+    m.userData.life = rand(0.22, 0.45);
+    scene.add(m); sparks.push(m);
+  }
+}
+function stepSparks(dt){
+  for (var i = sparks.length - 1; i >= 0; i--){
+    var m = sparks[i];
+    m.userData.life -= dt;
+    if (m.userData.life <= 0){ scene.remove(m); sparks.splice(i, 1); continue; }
+    m.userData.vel.y -= 12 * dt;
+    m.position.addScaledVector(m.userData.vel, dt);
+    if (m.position.y < 0.03){ m.position.y = 0.03; m.userData.vel.y *= -0.4; }
+    m.rotation.x += dt * 9; m.rotation.y += dt * 7;
+  }
 }
 
 /* ---------------- Grabbing ---------------- */
@@ -2808,7 +3560,7 @@ function stepGrab(dt){
 function updateCount(){
   var nbAlive = 0; nextbots.forEach(function(b){ if (!b.gone) nbAlive++; });
   var botAlive = 0; bots.forEach(function(b){ if (!b.gone) botAlive++; });
-  var n = dynamics.length + stickmen.length + nbAlive + botAlive;
+  var n = dynamics.length + stickmen.length + nbAlive + botAlive + vehicles.length;
   $("hud-count").textContent = n + (n === 1 ? " OBJECT" : " OBJECTS") + " · " + (currentMap ? currentMap.source.toUpperCase() : "");
 }
 var promptCheck = 0;
@@ -2817,6 +3569,9 @@ function updatePrompt(now){
   var el = $("hud-prompt");
   if (playerDead || rotateBlocked){ el.classList.add("hidden"); return; }
   if (heldBody || heldPoint){ el.innerHTML = IS_TOUCH ? "Holding — release <b>GRAB</b> to drop" : "Holding — release <b>" + keyName(Settings.keys.grab) + "</b> to drop"; el.classList.remove("hidden"); return; }
+  if (drivingVehicle){ el.innerHTML = IS_TOUCH ? "Driving the <b>" + drivingVehicle.name + "</b> — tap <b>EXIT</b> to get out" : "Driving the <b>" + drivingVehicle.name + "</b> — <b>" + keyName(Settings.keys.grab) + "</b> to get out"; el.classList.remove("hidden"); return; }
+  var nearVeh = nearestVehicle(3.4);
+  if (nearVeh){ el.innerHTML = IS_TOUCH ? "Tap <b>ENTER</b> to drive the <b>" + nearVeh.name + "</b>" : "Press <b>" + keyName(Settings.keys.grab) + "</b> to drive the <b>" + nearVeh.name + "</b>"; el.classList.remove("hidden"); return; }
   raycaster.setFromCamera({ x:0, y:0 }, camera); raycaster.far = 4.2;
   var targets = [];
   dynamics.forEach(function(b){ targets.push(b.mesh); });
@@ -2907,6 +3662,13 @@ function renderSpawnMenu(){
     toast(w.kind === "melee" ? w.name + " equipped — no ammo, swing it up close." : w.name + " equipped — full magazine and reserve.");
     document.querySelectorAll(".spawn-item").forEach(function(el){ el.classList.remove("equipped"); });
   });
+  section("Vehicles", [
+    { name: "Warthog — Jeep", source: "Base game", vtype: "hog" },
+    { name: "Ghost — Hover Bike", source: "Base game", vtype: "ghost" }
+  ], function(it){
+    var v = spawnVehicle(it.vtype);
+    if (v) toast(v.name + " spawned in front of you — walk up and press " + keyName(Settings.keys.grab) + " to drive.");
+  });
 }
 
 /* ---------------- Game flow ---------------- */
@@ -2946,6 +3708,7 @@ function startGame(mapEntry){
 }
 function quitToMenu(){
   if (typeof MP !== "undefined" && MP.active) mpLeaveRoom(true);
+  drivingVehicle = null; if (scoped) setScope(false);
   player.hp = player.maxHp; player.crouching = false; touchCrouch = false; updateHealthHud();
   state = "menu"; paused = false; spawnOpen = false; playerDead = false; fallbackLook = false; fireHeld = false; lockPendingAt = 0;
   rotateBlocked = false; var ro = $("rotate-overlay"); if (ro) ro.classList.add("hidden");
@@ -2964,6 +3727,7 @@ function playerDie(title, note){
   $("death-title").textContent = title;
   $("death-note").textContent = note;
   playerDead = true; fireHeld = false; releaseGrab(); resetTouchControls();
+  drivingVehicle = null; if (scoped) setScope(false);
   rotateBlocked = false; var ro2 = $("rotate-overlay"); if (ro2) ro2.classList.add("hidden");
   releaseOrientationLock();
   AudioSys.sting();
@@ -3109,6 +3873,10 @@ document.addEventListener("mousemove", function(e){
 document.addEventListener("mousedown", function(e){
   if (IS_TOUCH) return; /* touch play has its own buttons — a tap must never fire or capture */
   if (state !== "playing" || paused || spawnOpen || playerDead) return;
+  if (e.button === 2){ /* right-click: Sniper Rifle scope zoom toggle */
+    if (weapon && weapon.def.scope) setScope(!scoped);
+    return;
+  }
   if (e.button !== 0) return;
   if (!lookActive()){
     /* The capture click: clicking on the game locks the mouse onto the
@@ -3165,7 +3933,14 @@ window.addEventListener("keydown", function(e){
   if (spawnOpen) return;
   if (e.code === "ControlLeft" || e.code === "ControlRight" || e.code === Settings.keys.crouch) e.preventDefault();
   if (e.code === Settings.keys.reload) startReload();
-  if (e.code === Settings.keys.grab && !e.repeat && !heldBody && !heldPoint) tryGrab();
+  if (e.code === Settings.keys.grab && !e.repeat){
+    /* E is context-sensitive: driving beats grabbing. */
+    if (drivingVehicle){ exitVehicle(); }
+    else if (!heldBody && !heldPoint){
+      var nearV = nearestVehicle(3.4);
+      if (nearV) enterVehicle(nearV); else tryGrab();
+    }
+  }
   if (["Space","ArrowUp","ArrowDown"].indexOf(e.code) >= 0) e.preventDefault();
   /* arrow-key look fallback */
   if (e.code === "ArrowLeft") player.yaw += 0.12;
@@ -3220,6 +3995,17 @@ function syncTouchUI(){
     $("t-sprint").classList.toggle("active", !!keysDown["ShiftLeft"] && !player.crouching);
     $("t-crouch").classList.toggle("active", !!player.crouching);
     $("t-jump").classList.toggle("active", !!keysDown[Settings.keys.jump]);
+    /* v0.1.4: ENTER/EXIT appears only near a vehicle (or while
+       driving); SCOPE appears only with the Sniper Rifle equipped. */
+    var vehBtn = $("t-vehicle");
+    if (vehBtn){
+      var showVeh = !!drivingVehicle || !!nearestVehicle(3.4);
+      vehBtn.classList.toggle("hidden", !showVeh);
+      vehBtn.textContent = drivingVehicle ? "EXIT" : "ENTER";
+      vehBtn.classList.toggle("active", !!drivingVehicle);
+    }
+    var scBtn = $("t-scope");
+    if (scBtn) scBtn.classList.toggle("hidden", !(weapon && weapon.def.scope));
   }
 }
 (function initTouchControls(){
@@ -3304,6 +4090,11 @@ function syncTouchUI(){
   })();
   bindHold("t-grab", function(){ if (!heldBody && !heldPoint) tryGrab(); }, function(){ releaseGrab(); });
   bindHold("t-reload", function(){ startReload(); }, null);
+  bindHold("t-vehicle", function(){
+    if (drivingVehicle) exitVehicle();
+    else { var nv = nearestVehicle(3.4); if (nv) enterVehicle(nv); }
+  }, null);
+  bindHold("t-scope", function(){ if (weapon && weapon.def.scope) setScope(!scoped); }, null);
   bindHold("t-menu", function(){
     if (state === "playing" && !paused && !playerDead){
       paused = true; fallbackLook = false; fireHeld = false; resetTouchControls();
@@ -4078,7 +4869,9 @@ $("spawn-clear").addEventListener("click", function(){
   stickmen.forEach(function(sm){ worldGroup.remove(sm.group); });
   nextbots.forEach(function(nb){ worldGroup.remove(nb.group); });
   bots.forEach(function(bt){ worldGroup.remove(bt.group); });
-  dynamics = []; stickmen = []; nextbots = []; bots = []; heldBody = null; heldPoint = null;
+  vehicles.forEach(function(v){ worldGroup.remove(v.group); });
+  dynamics = []; stickmen = []; nextbots = []; bots = []; vehicles = []; drivingVehicle = null; heldBody = null; heldPoint = null;
+  refreshViewmodelVisibility();
   updateCount(); updateHealthHud(); toast("All spawned objects removed.");
 });
 $("btn-upd-check").addEventListener("click", function(){ AudioSys.init(); AudioSys.ui(); checkForUpdates(); });
@@ -4179,8 +4972,10 @@ function animate(){
        fallback instead of waiting on it forever. */
     if (!locked && lockPendingAt && now - lockPendingAt > 700) noteLockFailure();
     if (!paused && !spawnOpen && !playerDead && !rotateBlocked){
-      if (VR.active) updatePlayerVR(dt); else updatePlayer(dt);
-      if (!VR.active) edgeLook(dt);
+      if (drivingVehicle) updateVehicle(dt);
+      else if (VR.active) updatePlayerVR(dt); else updatePlayer(dt);
+      if (!VR.active && !drivingVehicle) edgeLook(dt);
+      processBurst(now);
       /* held weapon follows camera — flat screen only: in VR the
          weapon rides in the right hand and the hand does the bobbing */
       if (!VR.active){
@@ -4202,11 +4997,24 @@ function animate(){
       }
       knifeViewmodel.position.set(0.27 - kSwing * 0.3, -0.26 + Math.sin(bobT) * 0.008 + kSwing * 0.07, -0.44 - kSwing * 0.06);
       knifeViewmodel.rotation.set(0.12 + kSwing * 0.35, -0.18 - kSwing * 0.55, 0.1 - kSwing * 1.15);
+      /* v0.1.4 viewmodels share the same bob/recoil/swing language. */
+      brViewmodel.position.y = -0.24 + Math.sin(bobT) * 0.008 - recoil * 0.03;
+      brViewmodel.position.z = -0.5 + recoil * 0.055;
+      brViewmodel.rotation.x = recoil * 0.14;
+      sniperViewmodel.position.y = -0.23 + Math.sin(bobT) * 0.008 - recoil * 0.035;
+      sniperViewmodel.position.z = -0.52 + recoil * 0.07;
+      sniperViewmodel.rotation.x = recoil * 0.16;
+      shotgunViewmodel.position.y = -0.24 + Math.sin(bobT) * 0.008 - recoil * 0.035;
+      shotgunViewmodel.position.z = -0.5 + recoil * 0.07;
+      shotgunViewmodel.rotation.x = recoil * 0.16;
+      swordViewmodel.position.set(0.27 - kSwing * 0.3, -0.25 + Math.sin(bobT) * 0.008 + kSwing * 0.07, -0.44 - kSwing * 0.06);
+      swordViewmodel.rotation.set(0.1 + kSwing * 0.35, -0.15 - kSwing * 0.55, 0.08 - kSwing * 1.15);
       }
       if (weapon && weapon.reloading && now >= weapon.reloadEnd) finishReload();
       if (weapon && weapon.def.auto && ((fireHeld && lookActive()) || vrFireHeld)) fireWeapon(vrActiveAim());
     }
     stepDynamics(dt);
+    stepVehicles(dt);
     stepGrab(dt);
     for (var i=0;i<stickmen.length;i++) stickmen[i].update(dt);
     if (!paused && !spawnOpen && !playerDead && !rotateBlocked) for (var nbi=0;nbi<nextbots.length;nbi++){ if (!nextbots[nbi].remotePuppet) nextbots[nbi].update(dt); }
@@ -4214,7 +5022,14 @@ function animate(){
     mpTick(dt, now);
     updatePrompt(now);
   }
-  for (var si=0; si<spinners.length; si++) spinners[si].rotation.z += dt * 1.4;
+  for (var si=0; si<spinners.length; si++){
+    if (spinners[si].userData.spinY) spinners[si].rotation.y += dt * 0.5;
+    else spinners[si].rotation.z += dt * 1.4;
+  }
+  stepSparks(dt);
+  /* The sky dome follows the camera so it always surrounds the player. */
+  var skyC = new THREE.Vector3(); camera.getWorldPosition(skyC);
+  skyGroup.position.set(skyC.x, 0, skyC.z);
   flashLight.intensity = Math.max(0, flashLight.intensity - dt * 26);
   for (var j=puffs.length-1;j>=0;j--){
     var p = puffs[j]; p.userData.life -= dt;
@@ -4514,7 +5329,7 @@ function vrOnSessionStart(){
   if (worldGroup) worldGroup.visible = false;
   if (vrMenuGroup){ vrMenuGroup.visible = true; vrMenuDrawCards(); vrMenuDraw(); }
   rig.position.set(0, 0, 0); VR.rigYaw = 0; rig.rotation.set(0, 0, 0);
-  viewmodel.visible = false; akViewmodel.visible = false; knifeViewmodel.visible = false;
+  ALL_VIEWMODELS.forEach(function(g){ g.visible = false; });
   if (vrHudMesh) vrHudMesh.visible = false;
   if (vrPanelMesh) vrPanelMesh.visible = false;
   /* The flat screens behind the headset go dark/empty: no DOM
@@ -4564,7 +5379,7 @@ function vrReturnToMenu(){
   if (vrMenuGroup){ vrMenuGroup.visible = true; vrMenuDrawCards(); vrMenuDraw(); }
   rig.position.set(0, 0, 0); VR.rigYaw = 0; rig.rotation.set(0, 0, 0);
   vrSetWeaponsInHand(false);
-  viewmodel.visible = false; akViewmodel.visible = false; knifeViewmodel.visible = false;
+  ALL_VIEWMODELS.forEach(function(g){ g.visible = false; });
   if (vrHudMesh) vrHudMesh.visible = false;
 }
 /* Exit VR entirely from inside the headset (menu QUIT / pause
@@ -4766,15 +5581,23 @@ function vrBindSlot(side, idx, handedness){
 function vrSetWeaponsInHand(inHand){
   if (inHand){
     if (!vrWeaponMount) return;
-    vrWeaponMount.add(viewmodel); vrWeaponMount.add(akViewmodel); vrWeaponMount.add(knifeViewmodel);
+    ALL_VIEWMODELS.forEach(function(g){ vrWeaponMount.add(g); });
     viewmodel.position.set(0.02, -0.04, -0.13); viewmodel.rotation.set(0, 0, 0);
     akViewmodel.position.set(0.02, -0.04, -0.15); akViewmodel.rotation.set(0, 0, 0);
     knifeViewmodel.position.set(0.02, -0.03, -0.11); knifeViewmodel.rotation.set(0.12, -0.18, 0.1);
+    brViewmodel.position.set(0.02, -0.04, -0.15); brViewmodel.rotation.set(0, 0, 0);
+    sniperViewmodel.position.set(0.02, -0.04, -0.16); sniperViewmodel.rotation.set(0, 0, 0);
+    shotgunViewmodel.position.set(0.02, -0.04, -0.15); shotgunViewmodel.rotation.set(0, 0, 0);
+    swordViewmodel.position.set(0.02, -0.03, -0.11); swordViewmodel.rotation.set(0.1, -0.15, 0.08);
   } else {
-    camera.add(viewmodel); camera.add(akViewmodel); camera.add(knifeViewmodel);
+    ALL_VIEWMODELS.forEach(function(g){ camera.add(g); });
     viewmodel.position.set(0.24, -0.22, -0.42); viewmodel.rotation.set(0, 0, 0);
     akViewmodel.position.set(0.26, -0.24, -0.5); akViewmodel.rotation.set(0, 0, 0);
     knifeViewmodel.position.set(0.27, -0.26, -0.44); knifeViewmodel.rotation.set(0.12, -0.18, 0.1);
+    brViewmodel.position.set(0.26, -0.24, -0.5); brViewmodel.rotation.set(0, 0, 0);
+    sniperViewmodel.position.set(0.25, -0.23, -0.52); sniperViewmodel.rotation.set(0, 0, 0);
+    shotgunViewmodel.position.set(0.26, -0.24, -0.5); shotgunViewmodel.rotation.set(0, 0, 0);
+    swordViewmodel.position.set(0.27, -0.25, -0.44); swordViewmodel.rotation.set(0.1, -0.15, 0.08);
   }
 }
 
@@ -4837,6 +5660,7 @@ function vrTick(dt, now){
       if (kp >= 1) weapon.swingStart = 0; else ks = Math.sin(kp * Math.PI);
     }
     knifeViewmodel.rotation.set(0.12 + ks * 0.35, -0.18 - ks * 0.55, 0.1 - ks * 1.15);
+    swordViewmodel.rotation.set(0.1 + ks * 0.35, -0.15 - ks * 0.55, 0.08 - ks * 1.15);
   }
   if (panelOpen) vrUpdatePanelHover();
   if (now - VR.hudAt > 180){ VR.hudAt = now; vrDrawHud(); }
@@ -4861,7 +5685,8 @@ function vrPollController(name, s, dt, now, canPlay, panelOpen){
     }
     /* X or Y: the spawn menu (the left controller's menu-side buttons) */
     if (edge(4) || edge(5)){
-      if (VR.panelMode === "spawn") vrCloseSpawnMenu();
+      if (drivingVehicle){ exitVehicle(); }
+      else if (VR.panelMode === "spawn") vrCloseSpawnMenu();
       else if (canPlay) vrOpenSpawnMenu();
     }
     if (edge(1)) vrTryGrab("left");
@@ -5122,6 +5947,9 @@ function vrPanelItems(mode){
     Registry.nextbots.forEach(function(n){ items.push({ label: n.name, tag: "NPC", fn: function(){ spawnNextBot(n); } }); });
     Registry.bots.forEach(function(b){ items.push({ label: b.name, tag: "NPC", fn: function(){ spawnBot(b); } }); });
     Registry.weapons.forEach(function(w){ items.push({ label: w.name, tag: "WEAPON", fn: function(){ equipWeapon(w); } }); });
+    items.push({ label: "Warthog — Jeep", tag: "VEHICLE", fn: function(){ spawnVehicle("hog"); } });
+    items.push({ label: "Ghost — Hover Bike", tag: "VEHICLE", fn: function(){ spawnVehicle("ghost"); } });
+    if (drivingVehicle) items.push({ label: "Exit vehicle", tag: "", fn: function(){ exitVehicle(); vrHidePanel(); } });
     items.push({ label: "Remove all spawned objects", tag: "", fn: vrClearSpawned });
     items.push({ label: "Pause game", tag: "", fn: function(){ vrOpenPause(); } });
     items.push({ label: "Close", tag: "", fn: function(){ vrCloseSpawnMenu(); } });
@@ -5180,7 +6008,7 @@ function vrDrawPanel(){
   /* Button grid: two columns once the list is long (spawn menu). */
   var cols = items.length > 6 ? 2 : 1;
   var bw = cols === 2 ? 472 : 640, bx0 = cols === 2 ? 28 : (W - 640) / 2;
-  var bh = cols === 2 ? 52 : 66, gap = cols === 2 ? 10 : 14;
+  var bh = cols === 2 ? (items.length > 14 ? 44 : 52) : 66, gap = cols === 2 ? (items.length > 14 ? 7 : 10) : 14;
   VR.panelRects = [];
   items.forEach(function(it, i){
     var col = cols === 2 ? i % 2 : 0, row = cols === 2 ? Math.floor(i / 2) : i;
@@ -5264,7 +6092,8 @@ function vrClearSpawned(){
   stickmen.forEach(function(sm){ worldGroup.remove(sm.group); });
   nextbots.forEach(function(nb){ worldGroup.remove(nb.group); });
   bots.forEach(function(bt){ worldGroup.remove(bt.group); });
-  dynamics = []; stickmen = []; nextbots = []; bots = [];
+  vehicles.forEach(function(v){ worldGroup.remove(v.group); });
+  dynamics = []; stickmen = []; nextbots = []; bots = []; vehicles = []; drivingVehicle = null;
   heldBody = null; heldPoint = null; grabAnchorObj = null;
   VR.left.holding = false; VR.right.holding = false;
   updateCount(); updateHealthHud();
@@ -5289,7 +6118,9 @@ function vrMenuItemsFor(view){
   if (view === "home"){
     var sb = vrMenuFindMap("Sandbox") || Registry.maps[0];
     var fm = vrMenuFindMap("Farm") || Registry.maps[1];
+    var ct = vrMenuFindMap("City");
     if (sb) items.push({ label: "PLAY — SANDBOX", tag: "▶", fn: function(){ vrStartGame(sb); } });
+    if (ct) items.push({ label: "PLAY — CITY", tag: "▶", fn: function(){ vrStartGame(ct); } });
     if (fm) items.push({ label: "PLAY — FARM", tag: "▶", fn: function(){ vrStartGame(fm); } });
     items.push({ label: "MAPS", tag: "", fn: function(){ VR.menuView = "maps"; } });
     items.push({ label: "MODS", tag: "", fn: function(){ VR.menuView = "mods"; } });
@@ -5362,7 +6193,7 @@ function vrMenuDraw(){
   g.font = "400 26px system-ui, sans-serif"; g.fillStyle = "#b9b4a6";
   lines.forEach(function(ln, i){ g.fillText(ln, 38, 108 + i * 32); });
   var top = 108 + lines.length * 32 + 16;
-  var bh = items.length > 6 ? 54 : 60, gap = 10;
+  var bh = items.length > 7 ? 46 : items.length > 6 ? 54 : 60, gap = 10;
   VR.menuRects = [];
   items.forEach(function(it, i){
     var x = 38, y = top + i * (bh + gap), bw = W - 76;
@@ -5389,8 +6220,17 @@ function vrMenuDrawCard(card){
   g.clearRect(0, 0, W, H);
   if (!entry){ card.tex.needsUpdate = true; return; }
   var isFarm = entry.name === "Farm";
+  var isCity = entry.name === "City";
   /* Mini scene preview, drawn flat and simple. */
-  if (isFarm){
+  if (isCity){
+    g.fillStyle = "#6fa8d8"; g.fillRect(0, 0, W, 210);
+    g.fillStyle = "#3f444a"; g.fillRect(0, 210, W, 150);
+    g.fillStyle = "#2c3844"; g.fillRect(36, 60, 70, 150); g.fillRect(140, 30, 60, 180); g.fillRect(330, 44, 76, 166); g.fillRect(430, 80, 52, 130);
+    g.fillStyle = "#ffca7a"; g.fillRect(48, 84, 10, 12); g.fillRect(48, 116, 10, 12); g.fillRect(156, 60, 10, 12); g.fillRect(156, 100, 10, 12); g.fillRect(346, 70, 10, 12); g.fillRect(346, 110, 10, 12);
+    g.strokeStyle = "#53e6e0"; g.lineWidth = 6;
+    g.beginPath(); g.arc(256, 150, 30, 0, 7); g.stroke();
+    g.fillStyle = "#e8e4d2"; g.fillRect(250, 236, 4, 26); g.fillRect(250, 282, 4, 26); g.fillRect(250, 328, 4, 26);
+  } else if (isFarm){
     g.fillStyle = "#8fc3e8"; g.fillRect(0, 0, W, 210);
     g.fillStyle = "#5f9e46"; g.fillRect(0, 210, W, 150);
     g.fillStyle = "#a33327"; g.fillRect(56, 120, 130, 90);
