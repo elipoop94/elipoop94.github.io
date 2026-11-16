@@ -240,6 +240,34 @@
       .server-card p{ margin:0; color:var(--dim); font-size:12px; line-height:1.55; }
       .server-card .join{ flex:none; min-height:44px; padding:9px 20px; background:var(--accent); border:1px solid var(--accent); color:#171106; font-family:var(--head); font-weight:700; font-size:16px; letter-spacing:.16em; }
       .server-card .join:hover{ background:var(--accent-hi); }
+
+      /* ---------- Community maps (v0.1.5) ---------- */
+      .cm-card{ border:1px solid var(--line); background:var(--panel); padding:14px 18px; width:min(560px,100%); display:flex; gap:14px; align-items:flex-start; justify-content:space-between; }
+      .cm-card h3{ font-family:var(--head); font-size:21px; letter-spacing:.08em; margin:0 0 3px; text-transform:uppercase; }
+      .cm-card p{ margin:0; color:var(--dim); font-size:12px; line-height:1.55; }
+      .cm-card .desc{ color:var(--text); font-size:12.5px; margin-top:5px; }
+      .cm-btns{ flex:none; display:flex; flex-direction:column; gap:8px; }
+      .cm-btns .join{ min-height:40px; padding:8px 16px; background:var(--accent); border:1px solid var(--accent); color:#171106; font-family:var(--head); font-weight:700; font-size:14px; letter-spacing:.14em; }
+      .cm-btns .join:hover{ background:var(--accent-hi); }
+      .cm-btns .mini{ min-height:36px; padding:6px 14px; background:var(--panel2); border:1px solid var(--line2); color:var(--text); font-family:var(--head); font-weight:600; font-size:13px; letter-spacing:.12em; }
+      .cm-btns .mini:hover{ border-color:var(--accent); color:var(--accent-hi); }
+      .cm-btns .mini.danger:hover{ border-color:var(--danger); color:var(--danger); }
+      .cm-note{ color:var(--faint); font-size:12px; line-height:1.65; width:min(560px,100%); margin:0 0 18px; }
+      .cm-subhead{ font-family:var(--head); font-weight:700; font-size:26px; letter-spacing:.14em; margin:30px 0 12px; }
+      .cm-subhead:first-of-type{ margin-top:0; }
+
+      /* ---------- Map builder bar (v0.1.5) ---------- */
+      #builder-ui{ position:fixed; left:50%; bottom:calc(14px + env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:9;
+        width:min(680px,94vw); background:rgba(13,16,20,.94); border:1px solid var(--accent); padding:10px 12px; pointer-events:auto; }
+      #builder-ui .b-title{ font-family:var(--head); font-weight:700; font-size:14px; letter-spacing:.22em; color:var(--accent-hi); margin-bottom:8px; display:flex; justify-content:space-between; gap:10px; }
+      #builder-ui .b-title span:last-child{ color:var(--dim); letter-spacing:.06em; font-family:var(--mono); font-weight:400; font-size:11.5px; }
+      #builder-ui .b-row{ display:flex; flex-wrap:wrap; gap:7px; }
+      .btool{ flex:1 1 auto; min-height:44px; padding:8px 10px; background:var(--panel2); border:1px solid var(--line2); color:var(--text);
+        font-family:var(--head); font-weight:600; font-size:14px; letter-spacing:.1em; white-space:nowrap; }
+      .btool:hover{ border-color:var(--accent); }
+      .btool.active{ background:var(--accent); border-color:var(--accent); color:#171106; }
+      .btool.go{ background:var(--accent); border-color:var(--accent); color:#171106; font-weight:700; }
+      body.touch #builder-ui{ bottom:auto; top:calc(124px + env(safe-area-inset-top)); }
       #t-crouch{ width:62px; height:62px; font-size:10px; left:calc(39px + env(safe-area-inset-left)); bottom:calc(238px + env(safe-area-inset-bottom)); }
       #lockprompt{ position:fixed; left:50%; top:62%; transform:translateX(-50%); z-index:6; pointer-events:none;
         font-family:var(--head); font-weight:600; font-size:19px; letter-spacing:.3em; color:var(--text);
@@ -508,7 +536,7 @@
     <!-- ================= Home ================= -->
     <section id="scr-home" class="screen active">
       <div class="brand"><div class="logo-box"></div><h1 class="title">OPEN<span class="thin">BOX</span></h1></div>
-      <p class="tagline">A physics sandbox with a Halo-style sci-fi look — built for VR on Meta Quest 2, 3 and 3S, and flat on desktop &amp; phone. Three built-in maps (Sandbox, the new City, and Farm via its bundled mod), driveable vehicles — a Warthog-style jeep and a Ghost-style hover bike — and an arsenal: Glock 17, Battle Rifle, Sniper Rifle, Shotgun and a glowing Energy Sword, plus the AK-47 and Knife from mods. Spawn it all from the Q menu and make a mess.</p>
+      <p class="tagline">A physics sandbox with a Halo-style sci-fi look — built for VR on Meta Quest 2, 3 and 3S, and flat on desktop &amp; phone. Three built-in maps (Sandbox, the new City, and Farm via its bundled mod), driveable vehicles — a Warthog-style jeep and a Ghost-style hover bike — and an arsenal: Glock 17, Battle Rifle, Sniper Rifle, Shotgun and a glowing Energy Sword, plus the AK-47 and Knife from mods. Spawn it all from the Q menu and make a mess. New in v0.1.5: Community Maps — download maps other players built, build your own in the in-game Map Builder, and publish it for everyone.</p>
       <p id="vr-status">Checking VR support…</p>
       <nav class="menu">
         <button class="btn hidden" id="btn-enter-vr">Enter VR <span class="arr">&rarr;</span></button>
@@ -516,6 +544,7 @@
         <button class="btn hidden" id="btn-install">Install App <span class="arr">&rarr;</span></button>
         <button class="btn hidden" id="btn-update-badge">Update Available <span class="arr">&rarr;</span></button>
         <button class="btn" id="btn-multiplayer">Multiplayer <span class="arr">&rarr;</span></button>
+        <button class="btn" id="btn-community">Community Maps <span class="arr">&rarr;</span></button>
         <button class="btn" id="btn-mods">Mods <span class="arr">&rarr;</span></button>
         <button class="btn" id="btn-settings">Settings <span class="arr">&rarr;</span></button>
         <button class="btn" id="btn-update">Update <span class="arr">&rarr;</span></button>
@@ -523,7 +552,7 @@
       </nav>
       <p id="quest-install-help" class="hidden">On Quest: open this page in the Quest Browser &rarr; menu &rarr; Install, and OpenBox appears in your app library as a standalone VR app.</p>
       <div class="home-foot">
-        <div class="ver"><span id="home-version">OpenBox v0.1.4</span> — QUEST VR BUILD<br/>OPENS IN VR ON QUEST 2 / 3 / 3S · FLAT MODE ON DESKTOP &amp; PHONE</div>
+        <div class="ver"><span id="home-version">OpenBox v0.1.5</span> — QUEST VR BUILD<br/>OPENS IN VR ON QUEST 2 / 3 / 3S · FLAT MODE ON DESKTOP &amp; PHONE</div>
         <button class="btn small ghost" id="btn-vr">Check VR support</button>
       </div>
     </section>
@@ -535,6 +564,8 @@
         <h2 class="screentitle">MAP SELECT</h2>
       </div>
       <div class="list" id="map-list"></div>
+      <p class="cm-note" style="margin-top:18px;">Maps marked <b>Community</b> were made by other players and are single-player only — multiplayer stays on the Sandbox. Want more? Anyone can publish a map, Roblox-style.</p>
+      <div style="width:min(340px,100%);"><button class="btn" id="btn-maps-community">Community Maps <span class="arr">&rarr;</span></button></div>
       <div class="backrow"><button class="btn" id="btn-maps-back">Back <span class="arr">&larr;</span></button></div>
     </section>
 
@@ -672,7 +703,7 @@ OpenBox.RegisterWeapon("knife", { kind = "melee", damage = 45, range = 2.2, fire
         <h2 class="screentitle">UPDATE</h2>
       </div>
       <div class="upd-card">
-        <div class="upd-row"><span class="k">Current version</span><span class="v" id="upd-current">v0.1.4</span></div>
+        <div class="upd-row"><span class="k">Current version</span><span class="v" id="upd-current">v0.1.5</span></div>
         <div class="upd-row"><span class="k">Latest version</span><span class="v small" id="upd-latest">—</span></div>
         <div class="upd-row"><span class="k">Platform</span><span class="v small" id="upd-platform">—</span></div>
       </div>
@@ -718,6 +749,44 @@ OpenBox.RegisterWeapon("knife", { kind = "melee", damage = 45, range = 2.2, fire
       <div class="backrow"><button class="btn" id="btn-mp-back">Back <span class="arr">&larr;</span></button></div>
     </section>
 
+    <!-- ================= Community Maps (v0.1.5) ================= -->
+    <section id="scr-community" class="screen">
+      <div class="screen-head">
+        <div class="brand" style="margin-bottom:14px;"><div class="logo-box sm"></div><div class="crumb" style="margin:0;">OPENBOX · COMMUNITY</div></div>
+        <h2 class="screentitle">COMMUNITY MAPS</h2>
+      </div>
+      <p class="cm-note">Maps made by other players, shared over the same public relay as multiplayer — no accounts, no sign-up. Download one and it lands in Map Select under <b>Community</b>, ready to play. Community maps are single-player only. Publishing is capped at <b>3 maps per week per device</b> — the count lives on this device (there are no accounts), so clearing your browser data resets it. A map is only geometry data — it can never run code — and every map is checked before it can load. Names are filtered for bad words and links, and anything you see can be reported or its author blocked below.</p>
+      <div class="mp-error hidden" id="cm-error">Could not reach the community relay. Check your connection, then tap Refresh to try again. Your downloaded maps and your own maps below still work offline.</div>
+      <div class="mp-status" id="cm-status">Connecting to the community relay…</div>
+      <h3 class="cm-subhead">MAPS BY OTHER PLAYERS</h3>
+      <div class="list" id="cm-board-list" style="width:min(560px,100%);"></div>
+      <p class="cm-note" id="cm-hidden-note" style="margin-top:12px;"></p>
+      <div class="mod-actions" style="margin-top:16px;">
+        <button class="btn small" id="btn-cm-refresh">Refresh <span class="arr">&#8635;</span></button>
+        <button class="btn small ghost hidden" id="btn-cm-reset-hidden">Reset reports &amp; blocks</button>
+      </div>
+      <h3 class="cm-subhead">BUILD A MAP</h3>
+      <div class="mp-field">
+        <label for="cm-build-name">Map name — you place walls, ramps and props on a flat arena, test-play it, then save and publish</label>
+        <input class="mp-input" id="cm-build-name" maxlength="40" autocomplete="off" placeholder="My awesome map" />
+        <button class="btn small" id="btn-cm-build" style="flex:none;">Start building <span class="arr">&rarr;</span></button>
+      </div>
+      <div class="mod-actions">
+        <button class="btn small ghost hidden" id="btn-cm-resume">Resume building your draft</button>
+        <button class="btn small ghost" id="btn-cm-import">Import map.json&hellip;</button>
+      </div>
+      <div class="mp-field">
+        <label for="cm-author">Your author name — shown next to every map you publish</label>
+        <input class="mp-input" id="cm-author" maxlength="20" autocomplete="off" />
+      </div>
+      <h3 class="cm-subhead">MY MAPS</h3>
+      <p class="cm-note" id="cm-cap-note"></p>
+      <div class="list" id="cm-my-list" style="width:min(560px,100%);"></div>
+      <h3 class="cm-subhead">PUBLISHED BY YOU</h3>
+      <div class="list" id="cm-published-list" style="width:min(560px,100%);"></div>
+      <div class="backrow"><button class="btn" id="btn-cm-back">Back <span class="arr">&larr;</span></button></div>
+    </section>
+
     <!-- ================= Pause ================= -->
     <section id="scr-pause" class="screen overlay">
       <div class="screen-head">
@@ -752,9 +821,30 @@ OpenBox.RegisterWeapon("knife", { kind = "melee", damage = 45, range = 2.2, fire
       <nav class="menu"><button class="btn" id="btn-quit-back">Back to menu <span class="arr">&larr;</span></button></nav>
     </section>
 
+    <!-- ================= Map builder bar (v0.1.5) ================= -->
+    <div id="builder-ui" class="hidden">
+      <div class="b-title"><span>MAP BUILDER</span><span id="builder-status"></span></div>
+      <div class="b-row">
+        <button class="btool" data-tool="wall">Wall</button>
+        <button class="btool" data-tool="ramp">Ramp</button>
+        <button class="btool" data-tool="block">Block</button>
+        <button class="btool" data-tool="prop">Crate</button>
+        <button class="btool" id="b-rotate">Rotate</button>
+        <button class="btool" id="b-spawn">Set spawn</button>
+      </div>
+      <div class="b-row" style="margin-top:7px;">
+        <button class="btool" id="b-place">Place here</button>
+        <button class="btool" id="b-undo">Undo</button>
+        <button class="btool" id="b-test">Test play</button>
+        <button class="btool go" id="b-save">Save map</button>
+        <button class="btool" id="b-exit">Exit builder</button>
+      </div>
+    </div>
+
     <div id="toast" role="status"></div>
     <input type="file" id="import-folder" class="hidden" multiple />
     <input type="file" id="import-package" class="hidden" accept=".json,application/json" multiple />
+    <input type="file" id="cm-import-file" class="hidden" accept=".json,application/json" />
 
 <script>
 (function(){
@@ -771,7 +861,7 @@ var rand = function(a,b){ return a + Math.random()*(b-a); };
 /* Single source of truth for the game version. Bump this one constant
    when a new build ships — the home footer and every update check
    compare against it. */
-var GAME_VERSION = "0.1.4";
+var GAME_VERSION = "0.1.5";
 var UPDATE_RELEASES_API = "https://api.github.com/repos/elipoop94/openbox-opensource-sandbox-game-/releases/latest";
 var UPDATE_RELEASES_PAGE = "https://github.com/elipoop94/openbox-opensource-sandbox-game-/releases/latest";
 
@@ -1242,6 +1332,18 @@ function rebuildRegistry(){
     (m.nextbots || []).forEach(function(n){ Registry.nextbots.push(Object.assign({ source:m.name }, n)); });
     (m.bots || []).forEach(function(b){ Registry.bots.push(Object.assign({ source:m.name }, b)); });
   });
+  /* v0.1.5: downloaded community maps and the player's own built maps
+     ride along in Map Select next to the mod maps. CM is defined
+     later in the file; the typeof guard keeps early rebuilds safe. */
+  if (typeof CM !== "undefined" && CM){
+    CM.downloaded.forEach(function(e){
+      /* Reported, author-blocked, owner-banned or filter-failing
+         downloads never reach Map Select (v0.1.5 safety). */
+      if (typeof cmIsHidden === "function" && cmIsHidden(e)) return;
+      Registry.maps.push({ id:"cm:" + e.id, name:e.map.name || e.name, def:e.map, source:"Community" });
+    });
+    CM.myMaps.forEach(function(e){ Registry.maps.push({ id:"mine:" + e.id, name:e.def.name || "My Map", def:e.def, source:"My Maps" }); });
+  }
 }
 
 function readFileText(file){ return file.text ? file.text() : new Promise(function(res, rej){ var r = new FileReader(); r.onload = function(){ res(r.result); }; r.onerror = rej; r.readAsText(file); }); }
@@ -3582,7 +3684,7 @@ function updatePrompt(now){
 }
 
 /* ---------------- Screens / navigation ---------------- */
-var screens = { home:"scr-home", maps:"scr-maps", mods:"scr-mods", settings:"scr-settings", pause:"scr-pause", quit:"scr-quit", death:"scr-death", multiplayer:"scr-multiplayer", update:"scr-update" };
+var screens = { home:"scr-home", maps:"scr-maps", mods:"scr-mods", settings:"scr-settings", pause:"scr-pause", quit:"scr-quit", death:"scr-death", multiplayer:"scr-multiplayer", update:"scr-update", community:"scr-community" };
 var settingsReturn = "home";
 function showScreen(name){
   Object.keys(screens).forEach(function(k){ $(screens[k]).classList.toggle("active", k === name); });
@@ -3590,6 +3692,7 @@ function showScreen(name){
   if (name === "mods") renderMods();
   if (name === "update" && typeof checkForUpdates === "function") checkForUpdates();
   if (name === "multiplayer" && typeof openMultiplayerBrowser === "function") openMultiplayerBrowser();
+  if (name === "community" && typeof openCommunityMaps === "function") openCommunityMaps();
 }
 function renderMapList(){
   var list = $("map-list"); list.innerHTML = "";
@@ -3707,6 +3810,7 @@ function startGame(mapEntry){
   }
 }
 function quitToMenu(){
+  if (typeof Builder !== "undefined" && Builder.active) builderEnd();
   if (typeof MP !== "undefined" && MP.active) mpLeaveRoom(true);
   drivingVehicle = null; if (scoped) setScope(false);
   player.hp = player.maxHp; player.crouching = false; touchCrouch = false; updateHealthHud();
@@ -3878,6 +3982,10 @@ document.addEventListener("mousedown", function(e){
     return;
   }
   if (e.button !== 0) return;
+  /* Clicks on the Map Builder bar are UI clicks, not game clicks:
+     they must not capture the mouse, fire, or place a second piece
+     alongside the bar button's own handler (v0.1.5). */
+  if (e.target && e.target.closest && e.target.closest("#builder-ui")) return;
   if (!lookActive()){
     /* The capture click: clicking on the game locks the mouse onto the
        view (pointer lock) — the cursor disappears and every mouse
@@ -3888,6 +3996,9 @@ document.addEventListener("mousedown", function(e){
     updateLockPrompt();
     return;
   }
+  /* In the Map Builder a captured click places the selected piece
+     instead of firing (v0.1.5). */
+  if (typeof Builder !== "undefined" && Builder.active){ builderPlace(); return; }
   /* Mouse already captured: left click fires, like any FPS. */
   fireHeld = true;
   fireWeapon();
@@ -3931,6 +4042,19 @@ window.addEventListener("keydown", function(e){
     return;
   }
   if (spawnOpen) return;
+  /* Map Builder keys (v0.1.5): 1-4 pick a tool, R rotates, Z undoes,
+     X sets the spawn. Movement/jump already live in keysDown, and the
+     gun stays holstered while building. */
+  if (typeof Builder !== "undefined" && Builder.active){
+    if (e.code === "Digit1") builderSetTool("wall");
+    else if (e.code === "Digit2") builderSetTool("ramp");
+    else if (e.code === "Digit3") builderSetTool("block");
+    else if (e.code === "Digit4") builderSetTool("prop");
+    else if (e.code === "KeyR" && !e.repeat) builderRotate();
+    else if (e.code === "KeyZ" && !e.repeat) builderUndo();
+    else if (e.code === "KeyX" && !e.repeat) builderSetSpawn();
+    return;
+  }
   if (e.code === "ControlLeft" || e.code === "ControlRight" || e.code === Settings.keys.crouch) e.preventDefault();
   if (e.code === Settings.keys.reload) startReload();
   if (e.code === Settings.keys.grab && !e.repeat){
@@ -4079,7 +4203,7 @@ function syncTouchUI(){
     el.addEventListener("touchend", end, { passive: false });
     el.addEventListener("touchcancel", end, { passive: false });
   }
-  bindHold("t-fire", function(){ fireHeld = true; fireWeapon(); }, function(){ fireHeld = false; });
+  bindHold("t-fire", function(){ if (typeof Builder !== "undefined" && Builder.active){ builderPlace(); return; } fireHeld = true; fireWeapon(); }, function(){ fireHeld = false; });
   bindHold("t-jump", function(){ keysDown[Settings.keys.jump] = true; }, function(){ keysDown[Settings.keys.jump] = false; });
   bindHold("t-sprint", function(){ touchSprint = true; applyJoy(); }, function(){ touchSprint = false; applyJoy(); });
   /* CROUCH is a toggle on touch, not a hold: tap once to crouch, tap
@@ -4797,11 +4921,762 @@ function pwaApplyUpdateInPlace(){
   });
 }
 
+/* ---------------- Community Maps (v0.1.5) ----------------
+   Roblox-style community maps with no backend and no accounts:
+   anyone can publish a map, anyone can download and play it. The
+   board is the same public MQTT relay multiplayer uses (EMQX, then
+   HiveMQ), used a third way: each published map is ONE retained
+   message on openbox-community-maps/<id> holding the whole map, so
+   the board is simply "every retained message under that topic".
+   Downloading keeps the map on this device (localStorage; the
+   Windows wrapper can also stash it in the Mods folder through the
+   optional window.openboxMaps hook when it provides one) and adds
+   it to Map Select under Community. Removing your own map is an
+   empty retained publish to its topic. Publishing is capped at 3
+   maps per week per device — the counter lives in localStorage
+   because there are no accounts; the UI says so plainly. Every map
+   that arrives (or is published, imported or saved) passes the same
+   strict validation: map.json shape only, 64 KB cap, 120 boxes /
+   40 ramps / 60 props, whitelisted textures and colours — anything
+   else is rejected, never rendered. Community maps are
+   single-player: multiplayer stays on the Sandbox. */
+var CM_TOPIC = "openbox-community-maps/";
+var CM_MAX_BYTES = 64 * 1024;
+var CM_WEEKLY_CAP = 3;
+var CM_BOARD_CAP = 50;
+var CM = {
+  client: null, connected: false, connecting: false, pendingCbs: [],
+  board: {}, downloaded: [], myMaps: [], myPublished: [], author: "Player",
+  reported: [], blockedAuthors: [], seedTimer: null
+};
+/* ----- Content safety (v0.1.5) -----
+   A community map is geometry data only — it can never run code —
+   but the board is open to anyone, so names and authors are also
+   filtered. cmTextOk enforces, for map names (40), descriptions
+   (120) and author names (20): a safe character set (letters,
+   numbers, spaces, basic punctuation — no symbols, no emoji, no
+   angle brackets), no URLs or link fragments, and no profanity or
+   slurs from the blocklist below (checked per word, plus a
+   joined-up check for the strongest words so "f u c k" and
+   leetspeak don't slip through, without tripping on innocent words
+   that merely contain a short word, like "Grass"). The check runs
+   on publish (reject) AND on display (a board entry that fails is
+   hidden, its text never shown raw). All community text is rendered
+   with textContent only — never innerHTML — so nothing a map
+   carries can inject markup. Reports and author blocks are local
+   to this device; the owner's ban list (maps/blocked.json, fetched
+   from the same site as the game) hides a map or author for
+   everyone. */
+var CM_BLOCKED_WORDS = ["fuck", "shit", "bitch", "bastard", "whore", "slut", "dick", "cock", "pussy", "cunt", "piss", "dildo", "penis", "vagina", "jizz", "porn", "nude", "rape", "nigger", "nigga", "faggot", "fag", "retard", "kike", "spic", "chink", "gook", "tranny", "wetback", "nazi", "hitler", "kkk", "isis", "pedophile", "paedophile", "molest", "arsehole", "asshole", "wank", "bollocks", "twat", "minge", "skank", "hoe", "thot", "cum", "semen", "porno", "xxx", "hentai", "kys"];
+var CM_BLOCKED_SQUASH = ["fuck", "bitch", "whore", "slut", "dickhead", "cock", "pussy", "cunt", "nigger", "nigga", "faggot", "retard", "kike", "spic", "chink", "tranny", "rape", "porn", "penis", "vagina", "jizz", "asshole", "dildo"];
+var CM_BANNED = { ids: [], authors: [] };
+var cmBanFetched = false;
+function cmTextOk(s, maxLen){
+  if (typeof s !== "string") return false;
+  var t = s.trim();
+  if (!t || t.length > maxLen) return false;
+  if (!/^[A-Za-z0-9À-ÖØ-öø-ÿĀ-ž .,'’!?:;()\-&+]+$/.test(t)) return false;
+  if (/(https?|www\.|\.com|\.net|\.org|\.gg|\.io|\.xyz|\.me|\.ly|discord|bit\.ly|tinyurl|youtu\.be|t\.me|linktr)/i.test(t)) return false;
+  var norm = t.toLowerCase().replace(/0/g, "o").replace(/1/g, "i").replace(/3/g, "e").replace(/4/g, "a").replace(/5/g, "s").replace(/7/g, "t").replace(/@/g, "a").replace(/\$/g, "s");
+  var words = norm.split(/[^a-z]+/);
+  for (var i = 0; i < words.length; i++){
+    if (words[i] && CM_BLOCKED_WORDS.indexOf(words[i]) >= 0) return false;
+  }
+  var squashed = norm.replace(/[^a-z]/g, "");
+  for (var j = 0; j < CM_BLOCKED_SQUASH.length; j++){
+    if (squashed.indexOf(CM_BLOCKED_SQUASH[j]) >= 0) return false;
+  }
+  return true;
+}
+/* Hidden for this player: reported by them, author blocked by them,
+   on the owner's ban list, or failing the text filter. */
+function cmIsHidden(e){
+  if (!e) return true;
+  if (CM.reported.indexOf(e.id) >= 0) return true;
+  if (CM.blockedAuthors.indexOf(e.author) >= 0) return true;
+  if (CM_BANNED.ids.indexOf(e.id) >= 0) return true;
+  if (CM_BANNED.authors.indexOf(e.author) >= 0) return true;
+  if (!cmTextOk(e.name, 40) || !cmTextOk(e.author, 20)) return true;
+  if (e.description && !cmTextOk(e.description, 120)) return true;
+  return false;
+}
+function cmReport(e){
+  if (CM.reported.indexOf(e.id) < 0){
+    CM.reported.push(e.id);
+    cmStore("openbox.cm.reported", CM.reported);
+  }
+  renderCmBoard();
+  toast("Reported — “" + e.name + "” is hidden for you now. Thanks for flagging it.");
+}
+function cmBlockAuthor(e){
+  if (CM.blockedAuthors.indexOf(e.author) < 0){
+    CM.blockedAuthors.push(e.author);
+    cmStore("openbox.cm.blocked", CM.blockedAuthors);
+  }
+  rebuildRegistry(); renderMapList(); renderCmBoard();
+  toast("Blocked “" + e.author + "” — all of their maps are hidden for you.");
+}
+/* Owner ban list: a tiny JSON file Eli controls on the game's own
+   site. Anything listed (map id or author name) is hidden for every
+   player. A missing/unreachable file just means an empty list. */
+function cmFetchBanList(){
+  if (cmBanFetched) return;
+  cmBanFetched = true;
+  try {
+    fetch("maps/blocked.json", { cache: "no-store" }).then(function(r){
+      return r.ok ? r.json() : null;
+    }).then(function(j){
+      if (!j) return;
+      var ids = j.ids || j.blockedIds || j.maps || [];
+      var authors = j.authors || j.blockedAuthors || [];
+      if (Array.isArray(ids)) CM_BANNED.ids = ids.filter(function(x){ return typeof x === "string"; });
+      if (Array.isArray(authors)) CM_BANNED.authors = authors.filter(function(x){ return typeof x === "string"; });
+      rebuildRegistry(); renderMapList(); renderCmBoard();
+    }).catch(function(){});
+  } catch(e){}
+}
+var CM_TEX = ["concrete", "glasswin", "metalpanel", "planks", "leafy", "barn", "house", "metal", "hay", "grass"];
+function cmStore(key, val){ try { localStorage.setItem(key, JSON.stringify(val)); } catch(e){} }
+function cmLoad(key, dflt){ try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : dflt; } catch(e){ return dflt; } }
+function cmNum(v){ return (typeof v === "number" && isFinite(v)) ? v : null; }
+function cmHex(v, dflt){ return (typeof v === "string" && /^#[0-9a-fA-F]{6}$/.test(v)) ? v : dflt; }
+function cmVec(v, n){
+  if (!Array.isArray(v) || v.length !== n) return null;
+  for (var i = 0; i < n; i++) if (cmNum(v[i]) == null) return null;
+  return v.slice();
+}
+/* Strict map.json validation + sanitising: returns a clean engine
+   def built from whitelisted fields only, or null. */
+function cmValidateMap(raw){
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  var name = typeof raw.name === "string" ? raw.name.trim().slice(0, 40) : "";
+  if (!name) return null;
+  var floorSize = cmNum(raw.floorSize);
+  if (floorSize == null || floorSize < 12 || floorSize > 128) return null;
+  var half = floorSize / 2;
+  var spawn = cmVec(raw.spawn, 2);
+  if (!spawn || Math.abs(spawn[0]) > half || Math.abs(spawn[1]) > half) return null;
+  var def = {
+    name: name, spawn: [spawn[0], spawn[1]], floorSize: floorSize,
+    floorColor: cmHex(raw.floorColor, "#43484e"), sky: cmHex(raw.sky, "#8fc3e8"), fog: cmHex(raw.fog, "#a8c4de"),
+    boxes: [], ramps: []
+  };
+  var sy = cmNum(raw.spawnYaw); if (sy != null) def.spawnYaw = sy;
+  if (raw.floorTex === "grass" || raw.floorTex === "concrete") def.floorTex = raw.floorTex;
+  var boxes = Array.isArray(raw.boxes) ? raw.boxes : [];
+  if (boxes.length > 120) return null;
+  for (var i = 0; i < boxes.length; i++){
+    var b = boxes[i];
+    if (!b || typeof b !== "object") return null;
+    var pos = cmVec(b.pos, 3), size = cmVec(b.size, 3);
+    if (!pos || !size) return null;
+    if (size[0] < 0.2 || size[0] > 80 || size[1] < 0.2 || size[1] > 80 || size[2] < 0.2 || size[2] > 80) return null;
+    if (Math.abs(pos[0]) > half + 40 || Math.abs(pos[2]) > half + 40 || pos[1] < -5 || pos[1] > 60) return null;
+    var nb = { pos: pos, size: size, color: cmHex(b.color, "#5b636c") };
+    if (CM_TEX.indexOf(b.tex) >= 0) nb.tex = b.tex;
+    if (b.strip === "cyan" || b.strip === "amber") nb.strip = b.strip;
+    if (b.fence === true) nb.fence = true;
+    def.boxes.push(nb);
+  }
+  var ramps = Array.isArray(raw.ramps) ? raw.ramps : [];
+  if (ramps.length > 40) return null;
+  for (var j = 0; j < ramps.length; j++){
+    var r = ramps[j];
+    if (!r || typeof r !== "object") return null;
+    var rpos = cmVec(r.pos, 3), rsize = cmVec(r.size, 3);
+    if (!rpos || !rsize) return null;
+    if (rsize[0] < 0.4 || rsize[0] > 40 || rsize[1] < 0.3 || rsize[1] > 12 || rsize[2] < 0.4 || rsize[2] > 40) return null;
+    if (Math.abs(rpos[0]) > half + 40 || Math.abs(rpos[2]) > half + 40) return null;
+    var dir = cmNum(r.dir); dir = (dir == null) ? 0 : Math.floor(Math.abs(dir)) % 4;
+    var nr = { pos: rpos, size: rsize, dir: dir, color: cmHex(r.color, "#4c555f") };
+    if (CM_TEX.indexOf(r.tex) >= 0) nr.tex = r.tex;
+    def.ramps.push(nr);
+  }
+  var props = Array.isArray(raw.props) ? raw.props : [];
+  if (props.length > 60) return null;
+  if (props.length){
+    def.props = [];
+    for (var k = 0; k < props.length; k++){
+      var pp = props[k];
+      if (!pp || typeof pp !== "object") return null;
+      if (["crop", "hay", "crate"].indexOf(pp.type) < 0) return null;
+      var px = cmNum(pp.x), pz = cmNum(pp.z);
+      if (px == null || pz == null || Math.abs(px) > half || Math.abs(pz) > half) return null;
+      def.props.push({ type: pp.type, x: px, z: pz });
+    }
+  }
+  return def;
+}
+function cmValidateEntry(raw, topicId){
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  if (typeof raw.id !== "string" || raw.id !== topicId) return null;
+  if (typeof raw.name !== "string" || !raw.name.trim()) return null;
+  if (typeof raw.author !== "string" || !raw.author.trim()) return null;
+  var def = cmValidateMap(raw.map);
+  if (!def) return null;
+  var bytes = 0;
+  try { bytes = JSON.stringify(raw).length; } catch(e){}
+  if (bytes > CM_MAX_BYTES + 4096) return null;
+  return {
+    id: raw.id, name: raw.name.trim().slice(0, 40), author: raw.author.trim().slice(0, 20),
+    description: typeof raw.description === "string" ? raw.description.slice(0, 120) : "",
+    publishedAt: cmNum(raw.publishedAt) || 0, map: def
+  };
+}
+function cmWeekKey(d){
+  d = d || new Date();
+  var date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  var dayNum = (date.getUTCDay() + 6) % 7;
+  date.setUTCDate(date.getUTCDate() - dayNum + 3);
+  var first = new Date(Date.UTC(date.getUTCFullYear(), 0, 4));
+  var fday = (first.getUTCDay() + 6) % 7;
+  first.setUTCDate(first.getUTCDate() - fday + 3);
+  var week = 1 + Math.round((date - first) / (7 * 24 * 3600 * 1000));
+  return date.getUTCFullYear() + "-W" + (week < 10 ? "0" : "") + week;
+}
+function cmPubLog(){
+  var log = cmLoad("openbox.cm.publog", null);
+  var wk = cmWeekKey();
+  if (!log || log.week !== wk || typeof log.count !== "number") log = { week: wk, count: 0 };
+  return log;
+}
+function cmPublishesLeft(){ return Math.max(0, CM_WEEKLY_CAP - cmPubLog().count); }
+function cmAuthorName(){
+  var a = $("cm-author");
+  var v = a ? a.value.trim().slice(0, 20) : "";
+  if (v){ CM.author = v; cmStore("openbox.cm.author", v); }
+  return CM.author || "Player";
+}
+function cmIsDownloaded(id){ return CM.downloaded.some(function(e){ return e.id === id; }); }
+function cmIsMine(id){ return CM.myPublished.indexOf(id) >= 0; }
+function cmSetStatus(msg){ var el = $("cm-status"); if (el) el.textContent = msg; }
+function cmShowError(show){
+  var el = $("cm-error"); if (el) el.classList.toggle("hidden", !show);
+  if (show) cmSetStatus("The community relay could not be reached.");
+}
+/* Restore this device's community state (downloads, own maps, own
+   published ids, author name) — everything re-validated on load. */
+(function cmInit(){
+  var dl = cmLoad("openbox.cm.downloaded", []);
+  if (Array.isArray(dl)) dl.forEach(function(e){
+    if (e && typeof e.id === "string"){
+      var def = cmValidateMap(e.map);
+      if (def) CM.downloaded.push({ id: e.id, name: typeof e.name === "string" ? e.name : def.name, author: typeof e.author === "string" ? e.author : "unknown", description: typeof e.description === "string" ? e.description : "", publishedAt: cmNum(e.publishedAt) || 0, map: def });
+    }
+  });
+  var mm = cmLoad("openbox.cm.mymaps", []);
+  if (Array.isArray(mm)) mm.forEach(function(e){
+    if (e && typeof e.id === "string"){
+      var def = cmValidateMap(e.def);
+      if (def) CM.myMaps.push({ id: e.id, def: def });
+    }
+  });
+  var mine = cmLoad("openbox.cm.mine", []);
+  if (Array.isArray(mine)) CM.myPublished = mine.filter(function(x){ return typeof x === "string"; });
+  var rep = cmLoad("openbox.cm.reported", []);
+  if (Array.isArray(rep)) CM.reported = rep.filter(function(x){ return typeof x === "string"; });
+  var blk = cmLoad("openbox.cm.blocked", []);
+  if (Array.isArray(blk)) CM.blockedAuthors = blk.filter(function(x){ return typeof x === "string"; });
+  var au = cmLoad("openbox.cm.author", "");
+  CM.author = (typeof au === "string" && au.trim()) ? au.trim().slice(0, 20) : MP.playerName;
+})();
+
+/* ----- Board connection (its own client, multiplayer untouched) ----- */
+function cmConnect(cb){
+  if (CM.connected && CM.client){ if (cb) cb(true); return; }
+  if (cb) CM.pendingCbs.push(cb);
+  if (CM.connecting) return;
+  if (typeof mqtt === "undefined"){
+    cmShowError(true);
+    CM.pendingCbs.splice(0).forEach(function(f){ f(false); });
+    return;
+  }
+  CM.connecting = true; cmShowError(false);
+  cmSetStatus("Connecting to the community relay…");
+  var done = function(ok){
+    CM.connecting = false;
+    CM.pendingCbs.splice(0).forEach(function(f){ f(ok); });
+  };
+  (function tryBroker(idx){
+    if (idx >= MP_BROKERS.length){ cmShowError(true); done(false); return; }
+    var client;
+    try {
+      client = mqtt.connect(MP_BROKERS[idx], {
+        clientId: "openbox-cm-" + Math.random().toString(36).slice(2, 10),
+        clean: true, connectTimeout: 8000, reconnectPeriod: 0, keepalive: 30
+      });
+    } catch(e){ tryBroker(idx + 1); return; }
+    var settled = false;
+    var timer = setTimeout(function(){
+      if (settled) return; settled = true;
+      try { client.end(true); } catch(e){}
+      tryBroker(idx + 1);
+    }, 9000);
+    client.on("connect", function(){
+      if (settled) return; settled = true; clearTimeout(timer);
+      CM.client = client; CM.connected = true;
+      client.on("message", cmOnMessage);
+      client.on("close", function(){
+        if (CM.client !== client) return;
+        CM.connected = false; CM.client = null;
+        var sc = $("scr-community");
+        if (sc && sc.classList.contains("active")) cmShowError(true);
+      });
+      client.subscribe(CM_TOPIC + "#", function(){
+        cmShowError(false);
+        cmSetStatus("Connected — maps from other players are below. Download one to play it.");
+        renderCmBoard();
+        if (!CM.seedTimer) CM.seedTimer = setTimeout(cmSeedBoard, 1800);
+      });
+      done(true);
+    });
+    client.on("error", function(){
+      if (settled) return; settled = true; clearTimeout(timer);
+      try { client.end(true); } catch(e){}
+      tryBroker(idx + 1);
+    });
+  })(0);
+}
+function cmOnMessage(topic, payload){
+  if (topic.indexOf(CM_TOPIC) !== 0) return;
+  var id = topic.slice(CM_TOPIC.length);
+  if (!id || id.indexOf("/") >= 0) return;
+  var text = payload ? payload.toString() : "";
+  if (!text){ delete CM.board[id]; renderCmBoard(); return; }
+  var raw;
+  try { raw = JSON.parse(text); } catch(e){ return; }
+  var entry = cmValidateEntry(raw, id);
+  if (entry){ CM.board[id] = entry; renderCmBoard(); }
+}
+/* Seed the board so it is never empty on day one: the sample mod's
+   example map plus one new example, published as retained messages
+   by whichever client finds them missing. Idempotent — once the
+   retained copies exist, nobody republishes. Not counted against
+   any player's weekly cap (author "OpenBox", fixed ids). */
+var CM_SEED_SKY_ARENA = {
+  name: "Sky Arena", spawn: [0, 14], floorSize: 40, floorColor: "#39424c", sky: "#8fc3e8", fog: "#a8c4de",
+  boxes: [
+    { pos: [0, 1, -16], size: [24, 2, 1], color: "#5d6873", tex: "concrete" },
+    { pos: [0, 1, 16], size: [24, 2, 1], color: "#5d6873", tex: "concrete" },
+    { pos: [-16, 1, 0], size: [1, 2, 24], color: "#5d6873", tex: "concrete" },
+    { pos: [16, 1, 0], size: [1, 2, 24], color: "#5d6873", tex: "concrete" },
+    { pos: [0, 3, 0], size: [6, 6, 6], color: "#68727c", tex: "metalpanel", strip: "cyan" },
+    { pos: [-9, 0.6, -8], size: [2.4, 1.2, 2.4], color: "#6a7681" },
+    { pos: [9, 0.6, 8], size: [2.4, 1.2, 2.4], color: "#6a7681" },
+    { pos: [-9, 0.6, 8], size: [2.4, 1.2, 2.4], color: "#8a6a42", tex: "planks" },
+    { pos: [9, 0.6, -8], size: [2.4, 1.2, 2.4], color: "#8a6a42", tex: "planks" }
+  ],
+  ramps: [
+    { pos: [0, 0, -9], size: [4, 3, 6], dir: 0, color: "#49535d" },
+    { pos: [0, 0, 9], size: [4, 3, 6], dir: 1, color: "#49535d" }
+  ]
+};
+function cmSeedBoard(){
+  if (!CM.connected || !CM.client) return;
+  var seeds = [
+    { id: "seed-test-facility", name: "Test Facility", author: "OpenBox", description: "The example map from the sample mod — a small test chamber with a ramp.", publishedAt: 1767225600000, map: SAMPLE_MOD.maps.test_facility },
+    { id: "seed-sky-arena", name: "Sky Arena", author: "OpenBox", description: "A walled arena with a central tower, cover blocks and two ramps.", publishedAt: 1767225600000, map: CM_SEED_SKY_ARENA }
+  ];
+  seeds.forEach(function(s){
+    if (!CM.board[s.id]){
+      try { CM.client.publish(CM_TOPIC + s.id, JSON.stringify(s), { qos: 0, retain: true }); } catch(e){}
+    }
+  });
+}
+
+/* ----- Board / My Maps rendering ----- */
+function cmCardBase(e, metaText){
+  var card = document.createElement("div"); card.className = "cm-card";
+  var left = document.createElement("div");
+  var h3 = document.createElement("h3"); h3.textContent = e.name;
+  var p = document.createElement("p"); p.textContent = metaText;
+  left.appendChild(h3); left.appendChild(p);
+  card.appendChild(left);
+  return { card: card, left: left };
+}
+function cmBtn(label, cls, fn){
+  var b = document.createElement("button"); b.className = cls; b.textContent = label;
+  b.addEventListener("click", function(){ AudioSys.init(); AudioSys.ui(); fn(); });
+  return b;
+}
+function cmPlayEntry(entry){
+  AudioSys.init(); AudioSys.resume();
+  startGame(entry);
+}
+function renderCmBoard(){
+  var list = $("cm-board-list"); if (!list) return;
+  var all = Object.keys(CM.board).map(function(k){ return CM.board[k]; });
+  var entries = all.filter(function(e){ return !cmIsHidden(e); });
+  entries.sort(function(a, b){ return (b.publishedAt || 0) - (a.publishedAt || 0); });
+  entries = entries.slice(0, CM_BOARD_CAP);
+  var hn = $("cm-hidden-note");
+  if (hn){
+    var hiddenCount = all.filter(function(e){ return cmIsHidden(e); }).length;
+    hn.textContent = hiddenCount > 0
+      ? hiddenCount + " map(s) are hidden here — reported by you, from a blocked author, banned by the owner, or failing the name filter."
+      : "";
+  }
+  var rb = $("btn-cm-reset-hidden");
+  if (rb) rb.classList.toggle("hidden", !(CM.reported.length || CM.blockedAuthors.length));
+  list.innerHTML = "";
+  if (!entries.length){
+    var d = document.createElement("div"); d.className = "empty-note";
+    d.textContent = CM.connected
+      ? "Nothing on the board yet — be the first to publish a map from My Maps below."
+      : "No maps loaded yet — the relay has not answered. If this stays empty, tap Refresh; your downloaded maps are in Map Select either way.";
+    list.appendChild(d);
+  }
+  entries.forEach(function(e){
+    var objs = (e.map.boxes || []).length + (e.map.ramps || []).length + ((e.map.props || []).length);
+    var kb = Math.max(1, Math.round(JSON.stringify(e.map).length / 1024));
+    var when = e.publishedAt ? new Date(e.publishedAt).toLocaleDateString() : "";
+    var built = cmCardBase(e, "by " + e.author + (when ? " · " + when : "") + " · " + objs + " objects · " + kb + " KB");
+    if (e.description){
+      var dp = document.createElement("p"); dp.className = "desc"; dp.textContent = e.description;
+      built.left.appendChild(dp);
+    }
+    var btns = document.createElement("div"); btns.className = "cm-btns";
+    if (cmIsDownloaded(e.id)){
+      btns.appendChild(cmBtn("PLAY", "join", function(){
+        var reg = null;
+        Registry.maps.forEach(function(m){ if (m.id === "cm:" + e.id) reg = m; });
+        if (reg) cmPlayEntry(reg); else toast("That download is missing — remove it and download it again.");
+      }));
+      btns.appendChild(cmBtn("Remove download", "mini", function(){ cmRemoveDownload(e.id); }));
+    } else {
+      btns.appendChild(cmBtn("DOWNLOAD", "join", function(){ cmDownload(e); }));
+    }
+    if (cmIsMine(e.id)){
+      btns.appendChild(cmBtn("Remove from board", "mini danger", function(){ cmUnpublish(e.id); }));
+    } else {
+      btns.appendChild(cmBtn("Report", "mini", function(){ cmReport(e); }));
+      btns.appendChild(cmBtn("Block author", "mini", function(){ cmBlockAuthor(e); }));
+    }
+    built.card.appendChild(btns);
+    list.appendChild(built.card);
+  });
+  renderCmPublished();
+}
+function renderCmPublished(){
+  var list = $("cm-published-list"); if (!list) return;
+  list.innerHTML = "";
+  if (!CM.myPublished.length){
+    var d = document.createElement("div"); d.className = "empty-note";
+    d.textContent = "You have not published anything yet. Build a map above or import a map.json, then hit Publish next to it in My Maps.";
+    list.appendChild(d); return;
+  }
+  CM.myPublished.forEach(function(id){
+    var e = CM.board[id];
+    var built = cmCardBase({ name: e ? e.name : id },
+      e ? "Live on the board · by " + e.author + (e.publishedAt ? " · " + new Date(e.publishedAt).toLocaleDateString() : "")
+        : "Not on the board right now — the public relay may have dropped it. Remove still clears it for good.");
+    var btns = document.createElement("div"); btns.className = "cm-btns";
+    btns.appendChild(cmBtn("Remove", "mini danger", function(){ cmUnpublish(id); }));
+    built.card.appendChild(btns);
+    list.appendChild(built.card);
+  });
+}
+function renderCmMine(){
+  var capEl = $("cm-cap-note");
+  if (capEl) capEl.textContent = "Publishes left this week: " + cmPublishesLeft() + " of " + CM_WEEKLY_CAP + " (per device — there are no accounts, so this resets if you clear your browser data).";
+  var list = $("cm-my-list"); if (!list) return;
+  list.innerHTML = "";
+  if (!CM.myMaps.length){
+    var d = document.createElement("div"); d.className = "empty-note";
+    d.textContent = "No maps of your own yet. Build one above, or import a map.json — it will show up here and in Map Select under My Maps.";
+    list.appendChild(d); return;
+  }
+  CM.myMaps.forEach(function(e){
+    var objs = (e.def.boxes || []).length + (e.def.ramps || []).length + ((e.def.props || []).length);
+    var built = cmCardBase({ name: e.def.name }, objs + " objects · saved on this device");
+    var btns = document.createElement("div"); btns.className = "cm-btns";
+    btns.appendChild(cmBtn("PLAY", "join", function(){
+      cmPlayEntry({ id: "mine:" + e.id, name: e.def.name, def: e.def, source: "My Maps" });
+    }));
+    btns.appendChild(cmBtn("Publish", "mini", function(){ cmPublishMine(e); }));
+    btns.appendChild(cmBtn("Edit in builder", "mini", function(){
+      builderStart(JSON.parse(JSON.stringify(e.def)), e.id);
+    }));
+    btns.appendChild(cmBtn("Delete", "mini danger", function(){
+      CM.myMaps = CM.myMaps.filter(function(x){ return x.id !== e.id; });
+      if (Builder.myId === e.id){ Builder.def = null; Builder.myId = null; }
+      cmStore("openbox.cm.mymaps", CM.myMaps);
+      rebuildRegistry(); renderMapList(); renderCmMine();
+      toast("Deleted “" + e.def.name + "” from My Maps.");
+    }));
+    built.card.appendChild(btns);
+    list.appendChild(built.card);
+  });
+}
+function openCommunityMaps(){
+  var a = $("cm-author");
+  if (a && !a.dataset.init){ a.value = CM.author; a.dataset.init = "1"; }
+  var r = $("btn-cm-resume");
+  if (r) r.classList.toggle("hidden", !(Builder.def && !Builder.active));
+  cmFetchBanList();
+  renderCmBoard(); renderCmMine();
+  cmConnect(function(ok){ if (ok) renderCmBoard(); });
+}
+
+/* ----- Download / publish / remove ----- */
+function cmDownload(entry){
+  if (cmIsDownloaded(entry.id)){ toast("Already downloaded — it is in Map Select under Community."); return; }
+  CM.downloaded.push(entry);
+  cmStore("openbox.cm.downloaded", CM.downloaded);
+  /* Windows/Electron: when the wrapper exposes a Mods-folder hook,
+     stash the map file there too so it persists as a mod would. */
+  if (typeof window !== "undefined" && window.openboxMaps && typeof window.openboxMaps.saveDownloadedMap === "function"){
+    try { window.openboxMaps.saveDownloadedMap(entry.id, JSON.stringify(entry)); } catch(e){}
+  }
+  rebuildRegistry(); renderMapList(); renderCmBoard();
+  toast("Downloaded “" + entry.name + "” — it is in Map Select under Community, ready to play.");
+}
+function cmRemoveDownload(id){
+  CM.downloaded = CM.downloaded.filter(function(e){ return e.id !== id; });
+  cmStore("openbox.cm.downloaded", CM.downloaded);
+  rebuildRegistry(); renderMapList(); renderCmBoard();
+  toast("Download removed — the map has left Map Select.");
+}
+function cmPublishMine(myEntry){
+  if (cmPublishesLeft() <= 0){
+    toast("You've published " + CM_WEEKLY_CAP + " maps this week — try again next week. The cap is per device, not per account.");
+    return;
+  }
+  var def = cmValidateMap(JSON.parse(JSON.stringify(myEntry.def)));
+  if (!def){ toast("That map did not pass the safety checks (name, spawn, size or object limits), so it cannot be published."); return; }
+  if (!cmTextOk(def.name, 40) || !cmTextOk(cmAuthorName(), 20)){
+    toast("That map can't be published with that name or author name — no bad words, no links, and only letters, numbers, spaces and basic punctuation. Fix it and try again.");
+    return;
+  }
+  var payload = { id: "m" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7), name: def.name, author: cmAuthorName(), description: "", publishedAt: Date.now(), map: def };
+  var text = JSON.stringify(payload);
+  if (text.length > CM_MAX_BYTES){ toast("That map is too big to publish — the limit is 64 KB. Remove some objects and try again."); return; }
+  cmSetStatus("Publishing “" + def.name + "”…");
+  cmConnect(function(ok){
+    if (!ok || !CM.client){ cmShowError(true); toast("Could not reach the community relay, so nothing was published. Check your connection and try again."); return; }
+    try { CM.client.publish(CM_TOPIC + payload.id, text, { qos: 0, retain: true }); }
+    catch(e){ toast("Publishing failed — the relay dropped the message. Try again."); return; }
+    var log = cmPubLog(); log.count += 1; cmStore("openbox.cm.publog", log);
+    CM.myPublished.push(payload.id); cmStore("openbox.cm.mine", CM.myPublished);
+    CM.board[payload.id] = payload;
+    renderCmBoard(); renderCmMine();
+    cmSetStatus("Published — “" + def.name + "” is on the board for everyone.");
+    toast("Published “" + def.name + "”! Anyone who opens Community Maps can download and play it. " + cmPublishesLeft() + " of " + CM_WEEKLY_CAP + " publishes left this week.");
+  });
+}
+function cmUnpublish(id){
+  cmConnect(function(ok){
+    if (ok && CM.client){
+      try { CM.client.publish(CM_TOPIC + id, "", { qos: 0, retain: true }); } catch(e){}
+    }
+    CM.myPublished = CM.myPublished.filter(function(x){ return x !== id; });
+    cmStore("openbox.cm.mine", CM.myPublished);
+    delete CM.board[id];
+    renderCmBoard();
+    toast("Removed from the board. It can take a moment to disappear for everyone else.");
+  });
+}
+function cmImportFile(file){
+  readFileText(file).then(function(txt){
+    var raw;
+    try { raw = JSON.parse(txt); } catch(e){ toast("That file is not valid JSON."); return; }
+    var defs = [];
+    if (raw && raw.maps && typeof raw.maps === "object" && !Array.isArray(raw.maps)) Object.keys(raw.maps).forEach(function(k){ defs.push(raw.maps[k]); });
+    else if (raw && (raw.boxes || raw.floorSize || raw.spawn)) defs.push(raw);
+    if (!defs.length){ toast("No map found in that file — it needs to be a map.json, or a mod package with a maps section."); return; }
+    var added = 0;
+    defs.forEach(function(d){
+      var def = cmValidateMap(d);
+      if (def){ CM.myMaps.push({ id: "my" + Date.now().toString(36) + Math.floor(Math.random() * 99999), def: def }); added++; }
+    });
+    if (!added){ toast("That map did not pass the safety checks (name, spawn, size or object limits), so it was not imported."); return; }
+    cmStore("openbox.cm.mymaps", CM.myMaps);
+    rebuildRegistry(); renderMapList(); renderCmMine();
+    toast("Imported " + added + " map(s) into My Maps — Publish from there to share with everyone.");
+  });
+}
+
+/* ---------------- Map Builder (v0.1.5) ----------------
+   In-game, deliberately simple: you walk a flat arena in first
+   person and drop walls, ramps, blocks and crates a few metres in
+   front of you (click / FIRE / Place), rotate them, set the spawn,
+   undo mistakes, then test-play the draft or save it to My Maps.
+   Every placement rebuilds the world from the working def with the
+   player restored to where they stood, so what you see while
+   building is exactly what the saved map.json produces. Saving and
+   publishing run the same strict validation as downloaded maps. */
+var Builder = { active: false, def: null, myId: null, tool: "wall", rampDir: 0, wallVertical: false, history: [] };
+function builderEntry(){ return { id: "builder:draft", name: Builder.def.name, def: Builder.def, source: "Builder" }; }
+function builderStart(def, myId){
+  Builder.def = def; Builder.myId = myId || null; Builder.history = [];
+  Builder.tool = "wall"; Builder.rampDir = 0; Builder.wallVertical = false;
+  startGame(builderEntry());
+  Builder.active = true;
+  builderSetTool("wall");
+  toast("Building “" + def.name + "”. Click (or tap Place) to drop the selected piece in front of you. Keys 1–4 pick a tool, R rotates, Z undoes, X sets the spawn. Test-play or Save from the builder bar.", 6200);
+}
+function builderEnd(){ Builder.active = false; builderSyncUI(); }
+function builderSyncUI(){
+  var el = $("builder-ui"); if (!el) return;
+  var show = Builder.active && state === "playing" && !paused && !spawnOpen && !playerDead && !rotateBlocked;
+  el.classList.toggle("hidden", !show);
+  if (show && Builder.def){
+    var n = (Builder.def.boxes || []).length + (Builder.def.ramps || []).length + ((Builder.def.props || []).length);
+    var st = $("builder-status");
+    if (st) st.textContent = Builder.def.name + " · " + n + " pieces";
+  }
+}
+function builderSetTool(t){
+  Builder.tool = t;
+  document.querySelectorAll("#builder-ui .btool[data-tool]").forEach(function(b){
+    b.classList.toggle("active", b.getAttribute("data-tool") === t);
+  });
+}
+function builderRefresh(){
+  var px = player.pos.x, py = player.pos.y, pz = player.pos.z, yaw = player.yaw, pitch = player.pitch;
+  buildMap(builderEntry());
+  player.pos.set(px, py, pz); player.vel.set(0, 0, 0); player.yaw = yaw; player.pitch = pitch;
+}
+function builderPlacePos(){
+  var dir = new THREE.Vector3();
+  camera.getWorldDirection(dir); dir.y = 0;
+  if (dir.lengthSq() < 0.001) dir.set(0, 0, -1);
+  dir.normalize();
+  var half = (Builder.def.floorSize || 48) / 2;
+  var px = clamp(Math.round((player.pos.x + dir.x * 3.5) * 2) / 2, -half + 1.5, half - 1.5);
+  var pz = clamp(Math.round((player.pos.z + dir.z * 3.5) * 2) / 2, -half + 1.5, half - 1.5);
+  return { x: px, z: pz, gy: groundHeightAt(px, pz, 1000) };
+}
+function builderPlace(){
+  if (!Builder.active || !Builder.def || paused || spawnOpen || playerDead) return;
+  var def = Builder.def, p = builderPlacePos();
+  if (Builder.tool === "wall" || Builder.tool === "block"){
+    if (def.boxes.length >= 120){ toast("Box limit reached (120) — that is the publish cap too. Undo something or save as-is."); return; }
+    var b = Builder.tool === "wall"
+      ? (Builder.wallVertical ? { pos: [p.x, p.gy + 1.25, p.z], size: [0.6, 2.5, 5], color: "#5b636c", tex: "concrete" }
+                              : { pos: [p.x, p.gy + 1.25, p.z], size: [5, 2.5, 0.6], color: "#5b636c", tex: "concrete" })
+      : { pos: [p.x, p.gy + 0.6, p.z], size: [1.2, 1.2, 1.2], color: "#68727c", tex: "metalpanel" };
+    def.boxes.push(b); Builder.history.push({ arr: def.boxes, item: b });
+  } else if (Builder.tool === "ramp"){
+    if (def.ramps.length >= 40){ toast("Ramp limit reached (40) — that is the publish cap too."); return; }
+    var r = { pos: [p.x, p.gy, p.z], size: [4, 2, 6], dir: Builder.rampDir, color: "#4c555f", tex: "concrete" };
+    def.ramps.push(r); Builder.history.push({ arr: def.ramps, item: r });
+  } else if (Builder.tool === "prop"){
+    def.props = def.props || [];
+    if (def.props.length >= 60){ toast("Prop limit reached (60) — that is the publish cap too."); return; }
+    var pr = { type: "crate", x: p.x, z: p.z };
+    def.props.push(pr); Builder.history.push({ arr: def.props, item: pr });
+  }
+  builderRefresh();
+}
+function builderRotate(){
+  if (!Builder.active) return;
+  if (Builder.tool === "ramp"){ Builder.rampDir = (Builder.rampDir + 1) % 4; toast("Ramp direction " + (Builder.rampDir + 1) + " of 4 — place the ramp to see its slope."); }
+  else if (Builder.tool === "wall"){ Builder.wallVertical = !Builder.wallVertical; toast(Builder.wallVertical ? "Walls now run north–south." : "Walls now run east–west."); }
+  else toast("Rotate works on the Wall and Ramp tools — pick one of those first.");
+}
+function builderUndo(){
+  if (!Builder.active) return;
+  var last = Builder.history.pop();
+  if (!last){ toast("Nothing to undo yet."); return; }
+  var i = last.arr.indexOf(last.item);
+  if (i >= 0) last.arr.splice(i, 1);
+  builderRefresh();
+}
+function builderSetSpawn(){
+  if (!Builder.active || !Builder.def) return;
+  Builder.def.spawn = [Math.round(player.pos.x * 2) / 2, Math.round(player.pos.z * 2) / 2];
+  Builder.def.spawnYaw = player.yaw;
+  builderRefresh();
+  toast("Spawn point set where you are standing — the orange ring marks it.");
+}
+function builderTestPlay(){
+  if (!Builder.def) return;
+  var v = cmValidateMap(JSON.parse(JSON.stringify(Builder.def)));
+  if (!v){ toast("This draft cannot be played yet — it needs a name and a spawn point inside the floor."); return; }
+  Builder.active = false; builderSyncUI();
+  startGame({ id: "cmtest", name: v.name, def: v, source: "My Maps" });
+  toast("Test-playing “" + v.name + "”. Quit to the menu when you are done — your draft is waiting under Community Maps → Resume building.", 5200);
+}
+function builderSave(){
+  if (!Builder.def) return;
+  var v = cmValidateMap(JSON.parse(JSON.stringify(Builder.def)));
+  if (!v){ toast("Could not save — the map needs a name, a spawn point inside the floor, and to stay within the size limits."); return; }
+  if (Builder.myId){
+    var found = false;
+    CM.myMaps.forEach(function(e){ if (e.id === Builder.myId){ e.def = v; found = true; } });
+    if (!found) CM.myMaps.push({ id: Builder.myId, def: v });
+  } else {
+    Builder.myId = "my" + Date.now().toString(36) + Math.floor(Math.random() * 99999);
+    CM.myMaps.push({ id: Builder.myId, def: v });
+  }
+  Builder.def = v;
+  cmStore("openbox.cm.mymaps", CM.myMaps);
+  rebuildRegistry(); renderMapList();
+  builderEnd();
+  quitToMenu();
+  showScreen("community");
+  toast("Saved “" + v.name + "” to My Maps. Hit Publish there to share it with everyone.");
+}
+
 /* ---------------- UI wiring ---------------- */
 function nav(id, fn){ $(id).addEventListener("click", function(){ AudioSys.init(); AudioSys.ui(); fn(); }); }
 nav("btn-play", function(){ showScreen("maps"); });
 nav("btn-multiplayer", function(){ showScreen("multiplayer"); });
 nav("btn-mp-back", function(){ showScreen("home"); });
+nav("btn-community", function(){ showScreen("community"); });
+nav("btn-maps-community", function(){ showScreen("community"); });
+nav("btn-cm-back", function(){ showScreen("home"); });
+nav("btn-cm-refresh", function(){
+  cmShowError(false); cmSetStatus("Refreshing the board…");
+  cmConnect(function(ok){
+    if (ok){ renderCmBoard(); cmSetStatus("Board refreshed — " + Object.keys(CM.board).length + " map(s) on the board."); }
+  });
+});
+nav("btn-cm-reset-hidden", function(){
+  CM.reported = []; CM.blockedAuthors = [];
+  cmStore("openbox.cm.reported", CM.reported);
+  cmStore("openbox.cm.blocked", CM.blockedAuthors);
+  rebuildRegistry(); renderMapList(); renderCmBoard();
+  toast("Reports and author blocks cleared — hidden maps from other players can show again. Owner-banned maps stay hidden.");
+});
+nav("btn-cm-build", function(){
+  var name = ($("cm-build-name").value || "").trim().slice(0, 40);
+  if (!name){ toast("Give your map a name first — type it in the box above Start building."); return; }
+  cmAuthorName();
+  builderStart({
+    name: name, spawn: [0, 18], floorSize: 48, floorColor: "#43484e", sky: "#8fc3e8", fog: "#a8c4de",
+    boxes: [
+      { pos: [0, 1, -23], size: [46, 2, 1], color: "#4a5158", tex: "concrete", strip: "cyan" },
+      { pos: [0, 1, 23], size: [46, 2, 1], color: "#4a5158", tex: "concrete", strip: "cyan" },
+      { pos: [-23, 1, 0], size: [1, 2, 46], color: "#4a5158", tex: "concrete", strip: "cyan" },
+      { pos: [23, 1, 0], size: [1, 2, 46], color: "#4a5158", tex: "concrete", strip: "cyan" }
+    ],
+    ramps: []
+  }, null);
+});
+nav("btn-cm-resume", function(){ if (Builder.def) builderStart(Builder.def, Builder.myId); });
+nav("btn-cm-import", function(){ $("cm-import-file").click(); });
+$("cm-import-file").addEventListener("change", function(){ if (this.files.length) cmImportFile(this.files[0]); this.value = ""; });
+$("cm-author").addEventListener("change", function(){
+  cmAuthorName();
+  toast("Your maps will be published as “" + CM.author + "”.");
+});
+/* Map builder bar buttons */
+document.querySelectorAll("#builder-ui .btool[data-tool]").forEach(function(b){
+  b.addEventListener("click", function(){ AudioSys.init(); builderSetTool(b.getAttribute("data-tool")); });
+});
+$("b-rotate").addEventListener("click", function(){ AudioSys.init(); builderRotate(); });
+$("b-spawn").addEventListener("click", function(){ AudioSys.init(); builderSetSpawn(); });
+$("b-place").addEventListener("click", function(){ AudioSys.init(); builderPlace(); });
+$("b-undo").addEventListener("click", function(){ AudioSys.init(); builderUndo(); });
+$("b-test").addEventListener("click", function(){ AudioSys.init(); AudioSys.ui(); builderTestPlay(); });
+$("b-save").addEventListener("click", function(){ AudioSys.init(); AudioSys.ui(); builderSave(); });
+$("b-exit").addEventListener("click", function(){
+  AudioSys.init(); AudioSys.ui();
+  builderEnd(); quitToMenu();
+  toast("Builder closed. Your draft is kept — resume it any time from Community Maps.");
+});
 nav("btn-pause-leave", function(){ mpLeaveRoom(false); quitToMenu(); });
 $("btn-mp-leave-hud").addEventListener("click", function(){ AudioSys.init(); AudioSys.ui(); mpLeaveRoom(false); quitToMenu(); });
 $("mp-name").addEventListener("change", function(){
@@ -4965,6 +5840,7 @@ function animate(){
      site, and makes landscape return resume play on its own. */
   updateRotateState();
   syncTouchUI();
+  if (typeof builderSyncUI === "function") builderSyncUI();
   vrTick(dt, now);
   if (state === "playing"){
     /* A lock request that neither engages nor errors within 700 ms is a
@@ -6122,6 +6998,14 @@ function vrMenuItemsFor(view){
     if (sb) items.push({ label: "PLAY — SANDBOX", tag: "▶", fn: function(){ vrStartGame(sb); } });
     if (ct) items.push({ label: "PLAY — CITY", tag: "▶", fn: function(){ vrStartGame(ct); } });
     if (fm) items.push({ label: "PLAY — FARM", tag: "▶", fn: function(){ vrStartGame(fm); } });
+    /* v0.1.5: downloaded community maps get home-panel slots too,
+       exactly like City — the MAPS view below lists every one. */
+    var cmAdded = 0;
+    Registry.maps.forEach(function(m){
+      if (cmAdded >= 2 || m.source !== "Community") return;
+      cmAdded++;
+      items.push({ label: "PLAY — " + m.name.toUpperCase(), tag: "COMMUNITY", fn: function(){ vrStartGame(m); } });
+    });
     items.push({ label: "MAPS", tag: "", fn: function(){ VR.menuView = "maps"; } });
     items.push({ label: "MODS", tag: "", fn: function(){ VR.menuView = "mods"; } });
     items.push({ label: "SETTINGS", tag: "", fn: function(){ VR.menuView = "settings"; } });
