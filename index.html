@@ -227,6 +227,71 @@
       #hud-mpbar b{ color:var(--accent-hi); font-family:var(--head); font-size:14px; letter-spacing:.16em; }
       #btn-mp-leave-hud{ min-height:34px; padding:5px 12px; background:var(--panel2); border:1px solid var(--line2); color:var(--text); font-family:var(--head); font-weight:700; font-size:13px; letter-spacing:.14em; }
       #btn-mp-leave-hud:hover{ border-color:var(--danger); color:var(--danger); }
+      /* ---------- Voice chat (v0.1.5.1) ---------- */
+      #hud-voicebar{ position:absolute; top:64px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:6px;
+        pointer-events:auto; max-width:min(94vw,720px); }
+      #voice-controls{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center;
+        background:rgba(10,12,14,.72); border:1px solid var(--line2); padding:6px 8px; font-size:12px; letter-spacing:.08em; }
+      #voice-controls .vstatus{ color:var(--dim); white-space:nowrap; }
+      #voice-controls .vstatus.live{ color:var(--ok); font-weight:700; }
+      #voice-controls .vstatus.err{ color:#ffb3ad; white-space:normal; text-align:center; }
+      .vbtn{ min-height:34px; padding:5px 11px; background:var(--panel2); border:1px solid var(--line2); color:var(--text);
+        font-family:var(--head); font-weight:700; font-size:12.5px; letter-spacing:.12em; cursor:pointer; }
+      .vbtn:hover{ border-color:var(--accent); color:var(--accent-hi); }
+      .vbtn.on{ background:var(--accent); border-color:var(--accent); color:#171106; }
+      .vbtn.live{ background:var(--danger); border-color:var(--danger); color:#fff; }
+      #voice-players{ display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+      .vchip{ display:flex; align-items:center; gap:7px; background:rgba(10,12,14,.72); border:1px solid var(--line2); padding:4px 6px 4px 10px;
+        font-size:12px; letter-spacing:.06em; }
+      .vchip .vdot{ width:9px; height:9px; border-radius:50%; background:rgba(236,233,225,.3); flex:none; }
+      .vchip.talking{ border-color:var(--ok); }
+      .vchip.talking .vdot{ background:var(--ok); box-shadow:0 0 8px var(--ok); }
+      .vchip .vmute{ min-height:28px; padding:2px 8px; background:var(--panel2); border:1px solid var(--line2); color:var(--text);
+        font-family:var(--head); font-weight:700; font-size:11px; letter-spacing:.1em; cursor:pointer; }
+      .vchip .vmute.on{ background:var(--danger); border-color:var(--danger); color:#fff; }
+      .voice-note{ color:var(--dim); font-size:13px; line-height:1.65; width:min(560px,100%); margin:0 0 18px; }
+      .voice-note b{ color:var(--text); }
+      #pause-voice{ width:min(340px,100%); margin-top:18px; border:1px solid var(--line); background:var(--panel); padding:14px 16px; }
+      #pause-voice h3{ font-family:var(--head); font-size:17px; letter-spacing:.18em; margin:0 0 6px; }
+      #pause-voice .vstatus{ color:var(--dim); font-size:12.5px; line-height:1.55; margin:0 0 10px; }
+      #pause-voice .vstatus.live{ color:var(--ok); font-weight:700; }
+      #pause-voice .vstatus.err{ color:#ffb3ad; }
+      #pause-voice .vrow{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+      #pause-voice-players{ display:flex; flex-direction:column; gap:6px; }
+      #pause-voice-players .vchip{ justify-content:space-between; }
+      #t-mic{ width:62px; height:62px; font-size:11px; left:calc(39px + env(safe-area-inset-left)); bottom:calc(312px + env(safe-area-inset-bottom)); }
+      #t-mic.live{ background:var(--danger); border-color:var(--danger); color:#fff; }
+      /* ---------- Mic setup (v0.1.5.2) ---------- */
+      .mic-card{ border:1px solid var(--line); background:var(--panel); padding:18px; width:min(600px,100%); margin-bottom:16px; }
+      .mic-card h3{ font-family:var(--head); font-size:20px; letter-spacing:.16em; margin:0 0 8px; text-transform:uppercase; }
+      .mic-card p{ color:var(--dim); font-size:13.5px; line-height:1.65; margin:0 0 12px; }
+      .mic-card p b{ color:var(--text); }
+      .mic-state-row{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:6px; }
+      .mic-state-label{ font-size:12px; letter-spacing:.22em; color:var(--faint); text-transform:uppercase; }
+      #mic-setup-state{ font-family:var(--head); font-weight:700; font-size:30px; letter-spacing:.1em; line-height:1; }
+      #mic-setup-state.ready{ color:var(--ok); }
+      #mic-setup-state.blocked{ color:var(--danger); }
+      #mic-setup-state.unset{ color:var(--accent-hi); }
+      #mic-setup-detail{ color:var(--dim); font-size:13.5px; line-height:1.65; width:min(600px,100%); margin:0 0 18px; }
+      .mic-enable-btn{ min-height:58px; font-size:20px; background:var(--accent); border-color:var(--accent); color:#171106; }
+      .mic-enable-btn .arr{ color:#171106; }
+      .mic-enable-btn:hover,.mic-enable-btn:focus-visible{ background:var(--accent-hi); border-color:var(--accent-hi); }
+      .mic-meter-track{ height:26px; background:#0a0c0e; border:1px solid var(--line2); position:relative; overflow:hidden; margin:10px 0 8px; }
+      #mic-meter-fill{ position:absolute; left:0; top:0; bottom:0; width:0%; background:var(--ok); transition:width .07s linear; }
+      .mic-meter-track.hot #mic-meter-fill{ background:var(--accent-hi); }
+      #mic-test-status{ color:var(--dim); font-size:13px; line-height:1.6; min-height:21px; }
+      #mic-test-working{ color:var(--ok); font-weight:700; font-size:15px; letter-spacing:.06em; margin-top:8px; }
+      #btn-mic-test-ptt.live{ background:var(--danger); border-color:var(--danger); color:#fff; }
+      .mic-blocked{ border:1px solid var(--danger); background:rgba(255,83,71,.1); padding:16px 18px; width:min(600px,100%); margin-bottom:16px; }
+      .mic-blocked h3{ font-family:var(--head); font-size:19px; letter-spacing:.14em; margin:0 0 8px; color:#ffb3ad; text-transform:uppercase; }
+      .mic-blocked p{ color:var(--text); font-size:13.5px; line-height:1.7; margin:0 0 12px; }
+      #mp-mic-prompt{ border:1px solid var(--accent); background:var(--panel); padding:16px 18px; width:min(560px,100%); margin-bottom:18px; }
+      #mp-mic-prompt h3{ font-family:var(--head); font-size:22px; letter-spacing:.1em; margin:0 0 6px; text-transform:uppercase; }
+      #mp-mic-prompt p{ margin:0 0 12px; color:var(--dim); font-size:13px; line-height:1.65; }
+      #mp-mic-prompt.ready{ border-color:var(--line); }
+      #mp-mic-prompt.ready h3{ color:var(--ok); }
+      .mic-picker-note{ color:var(--faint); font-size:12px; line-height:1.6; margin-top:8px; }
+
       #dmgflash{ position:fixed; inset:0; pointer-events:none; z-index:7; opacity:0; background:radial-gradient(ellipse at center, transparent 42%, rgba(255,40,30,.5) 100%); transition:opacity .35s ease; }
       /* ---------- Multiplayer browser ---------- */
       .mp-field{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:20px; width:min(560px,100%); }
@@ -477,6 +542,17 @@
     <div id="hud" class="hidden">
       <div id="hud-tl"><div id="hud-map">SANDBOX</div><div id="hud-count"></div><div id="hud-health" class="hidden">HP 100<span class="bar"><span class="fill" id="hud-health-fill" style="width:100%"></span></span></div></div>
       <div id="hud-mpbar" class="hidden"><span>SERVER <b id="hud-mp-name">—</b> · <span id="hud-mp-count">1 PLAYER</span></span><button id="btn-mp-leave-hud">LEAVE</button></div>
+      <div id="hud-voicebar" class="hidden">
+        <div id="voice-controls">
+          <button class="vbtn" id="btn-voice-ptt" title="Hold to talk">HOLD TO TALK</button>
+          <span class="vstatus" id="voice-status">Mic off — hold V to talk</span>
+          <button class="vbtn" id="btn-voice-mute-self">MUTE ME</button>
+          <button class="vbtn" id="btn-voice-mute-all">MUTE ALL</button>
+          <button class="vbtn" id="btn-voice-setup" title="Mic setup">MIC SETUP</button>
+        </div>
+        <div id="voice-players"></div>
+      </div>
+      <div id="voice-audio-holder" class="hidden" aria-hidden="true"></div>
       <div id="hud-crouch" class="hidden">CROUCHED</div>
       <div id="crosshair" aria-hidden="true"><span class="ring"></span><span class="arm top"></span><span class="arm bottom"></span><span class="arm left"></span><span class="arm right"></span><span class="dot"></span></div>
       <div id="hitmarker"></div>
@@ -497,6 +573,7 @@
       <div id="joy"><div id="joy-knob"></div></div>
       <button class="tbtn" id="t-sprint">SPRINT</button>
       <button class="tbtn" id="t-crouch">CROUCH</button>
+      <button class="tbtn hidden" id="t-mic">MIC</button>
       <button class="tbtn" id="t-fire">FIRE</button>
       <button class="tbtn" id="t-jump">JUMP</button>
       <button class="tbtn" id="t-reload">RELOAD</button>
@@ -536,7 +613,7 @@
     <!-- ================= Home ================= -->
     <section id="scr-home" class="screen active">
       <div class="brand"><div class="logo-box"></div><h1 class="title">OPEN<span class="thin">BOX</span></h1></div>
-      <p class="tagline">A physics sandbox with a Halo-style sci-fi look — built for VR on Meta Quest 2, 3 and 3S, and flat on desktop &amp; phone. Three built-in maps (Sandbox, the new City, and Farm via its bundled mod), driveable vehicles — a Warthog-style jeep and a Ghost-style hover bike — and an arsenal: Glock 17, Battle Rifle, Sniper Rifle, Shotgun and a glowing Energy Sword, plus the AK-47 and Knife from mods. Spawn it all from the Q menu and make a mess. New in v0.1.5: Community Maps — download maps other players built, build your own in the in-game Map Builder, and publish it for everyone.</p>
+      <p class="tagline">A physics sandbox with a Halo-style sci-fi look — built for VR on Meta Quest 2, 3 and 3S, and flat on desktop &amp; phone. Three built-in maps (Sandbox, the new City, and Farm via its bundled mod), driveable vehicles — a Warthog-style jeep and a Ghost-style hover bike — and an arsenal: Glock 17, Battle Rifle, Sniper Rifle, Shotgun and a glowing Energy Sword, plus the AK-47 and Knife from mods. Spawn it all from the Q menu and make a mess. New in v0.1.5: Community Maps — download maps other players built, build your own in the in-game Map Builder, and publish it for everyone. New in v0.1.5.1: voice chat in multiplayer — push-to-talk with the players in your server (hold V, the MIC button on touch, or the left stick click in VR). New in v0.1.5.2: Mic Setup — pick your microphone, test it with a live level meter before you join, and fix a blocked mic step by step (Multiplayer &rarr; SET UP MIC, Settings &rarr; Voice, or MIC SETUP in the voice bar).</p>
       <p id="vr-status">Checking VR support…</p>
       <nav class="menu">
         <button class="btn hidden" id="btn-enter-vr">Enter VR <span class="arr">&rarr;</span></button>
@@ -552,7 +629,7 @@
       </nav>
       <p id="quest-install-help" class="hidden">On Quest: open this page in the Quest Browser &rarr; menu &rarr; Install, and OpenBox appears in your app library as a standalone VR app.</p>
       <div class="home-foot">
-        <div class="ver"><span id="home-version">OpenBox v0.1.5</span> — QUEST VR BUILD<br/>OPENS IN VR ON QUEST 2 / 3 / 3S · FLAT MODE ON DESKTOP &amp; PHONE</div>
+        <div class="ver"><span id="home-version">OpenBox v0.1.5.2</span> — QUEST VR BUILD<br/>OPENS IN VR ON QUEST 2 / 3 / 3S · FLAT MODE ON DESKTOP &amp; PHONE</div>
         <button class="btn small ghost" id="btn-vr">Check VR support</button>
       </div>
     </section>
@@ -693,6 +770,17 @@ OpenBox.RegisterWeapon("knife", { kind = "melee", damage = 45, range = 2.2, fire
         <div id="bind-list"></div>
       </div>
 
+      <div class="set-group">
+        <h3>Voice</h3>
+        <div class="set-row">
+          <label for="btn-settings-mic-setup">Microphone<span class="hint" id="settings-mic-status">Microphone: Not set up — set up your mic to talk in multiplayer voice chat.</span></label>
+          <button class="btn small" id="btn-settings-mic-setup" type="button">Set up mic <span class="arr">&rarr;</span></button>
+        </div>
+        <div class="set-row">
+          <label>Push-to-talk<span class="hint">Hold V on desktop, hold the MIC button on touch, or hold the left stick click in VR. Your mic is off until you hold it. Nothing is recorded.</span></label>
+        </div>
+      </div>
+
       <div class="backrow"><button class="btn" id="btn-settings-back">Back <span class="arr">&larr;</span></button></div>
     </section>
 
@@ -703,7 +791,7 @@ OpenBox.RegisterWeapon("knife", { kind = "melee", damage = 45, range = 2.2, fire
         <h2 class="screentitle">UPDATE</h2>
       </div>
       <div class="upd-card">
-        <div class="upd-row"><span class="k">Current version</span><span class="v" id="upd-current">v0.1.5</span></div>
+        <div class="upd-row"><span class="k">Current version</span><span class="v" id="upd-current">v0.1.5.2</span></div>
         <div class="upd-row"><span class="k">Latest version</span><span class="v small" id="upd-latest">—</span></div>
         <div class="upd-row"><span class="k">Platform</span><span class="v small" id="upd-platform">—</span></div>
       </div>
@@ -733,6 +821,11 @@ OpenBox.RegisterWeapon("knife", { kind = "melee", damage = 45, range = 2.2, fire
         <label for="mp-name">Your player name — other players see this above your stickman</label>
         <input class="mp-input" id="mp-name" maxlength="16" autocomplete="off" />
       </div>
+      <div id="mp-mic-prompt">
+        <h3 id="mp-mic-prompt-title">Set up your mic to talk</h3>
+        <p id="mp-mic-prompt-text">Voice chat needs a set-up microphone. Set it up now — pick your mic and test it here, before you join a server, instead of finding out mid-game that nobody can hear you. Nothing is recorded.</p>
+        <button class="btn small" id="btn-mp-mic-setup" type="button" style="background:var(--accent);border-color:var(--accent);color:#171106;">SET UP MIC <span class="arr" style="color:#171106;">&rarr;</span></button>
+      </div>
       <div class="mp-error hidden" id="mp-error">Could not reach the multiplayer relay. Check your connection, then tap Refresh to try again. Single-player still works from Play.</div>
       <div class="mp-status" id="mp-status">Connecting to the multiplayer relay…</div>
       <div class="screen-head" style="margin-bottom:14px;"><h2 class="screentitle" style="font-size:26px;">OPEN SERVERS</h2></div>
@@ -746,6 +839,7 @@ OpenBox.RegisterWeapon("knife", { kind = "melee", damage = 45, range = 2.2, fire
         <input class="mp-input" id="mp-server-name" maxlength="28" autocomplete="off" placeholder="My Sandbox server" />
         <button class="btn small" id="btn-mp-create" style="flex:none;">Create &amp; host <span class="arr">&rarr;</span></button>
       </div>
+      <p class="voice-note"><b>Voice chat:</b> first press <b>SET UP MIC</b> above to pick and test your microphone (v0.1.5.2). Players in the same server can talk. It is <b>push-to-talk</b> — hold <b>V</b> on desktop, hold the <b>MIC</b> button on touch, or hold the <b>left stick click</b> in VR. Your mic is off until you hold it, and nothing is transmitted before that. Voice runs player-to-player (the relay only helps players find each other) — it is live only, never recorded or stored. Voice is only with players in your server. There is <b>no filter for spoken words</b> — unlike map names, speech can't be filtered — so mute yourself, mute everyone, or mute individual players from the voice bar in game instead. If your browser blocks the microphone, open <b>Mic Setup</b> — it shows exactly how to allow it and a Try again button — and the game plays on without voice either way.</p>
       <div class="backrow"><button class="btn" id="btn-mp-back">Back <span class="arr">&larr;</span></button></div>
     </section>
 
@@ -787,6 +881,54 @@ OpenBox.RegisterWeapon("knife", { kind = "melee", damage = 45, range = 2.2, fire
       <div class="backrow"><button class="btn" id="btn-cm-back">Back <span class="arr">&larr;</span></button></div>
     </section>
 
+    <!-- ================= Mic Setup (v0.1.5.2) ================= -->
+    <section id="scr-micsetup" class="screen">
+      <div class="screen-head">
+        <div class="brand" style="margin-bottom:14px;"><div class="logo-box sm"></div><div class="crumb" style="margin:0;">OPENBOX &middot; VOICE</div></div>
+        <h2 class="screentitle">MIC SETUP</h2>
+      </div>
+      <div class="mic-state-row"><span class="mic-state-label">Microphone status</span><span id="mic-setup-state" class="unset">Not set up</span></div>
+      <p id="mic-setup-detail">Voice chat needs your microphone. Nothing is recorded. Set up your mic here and you can see it working before you join a server.</p>
+
+      <div class="mic-card" id="mic-enable-area">
+        <h3>1 &middot; Enable microphone</h3>
+        <p>Voice chat needs your microphone. Nothing is recorded. Press the button and choose <b>Allow</b> when your browser asks. Your mic stays off in game until you hold push-to-talk — enabling it here only lets the game use it when you talk.</p>
+        <button class="btn mic-enable-btn" id="btn-mic-enable" type="button">ENABLE MICROPHONE <span class="arr">&rarr;</span></button>
+      </div>
+
+      <div class="mic-blocked hidden" id="mic-blocked-area">
+        <h3>Microphone blocked</h3>
+        <p id="mic-blocked-text">Your browser blocked the microphone. Click the lock icon in the address bar, allow Microphone, then press Try again.</p>
+        <p>On the phone app: allow Microphone for OpenBox in your system app settings, then press Try again. In the Windows app: allow microphone access in Windows Settings &rarr; Privacy &rarr; Microphone, then press Try again. No microphone plugged in? Plug one in, then press Try again.</p>
+        <button class="btn small" id="btn-mic-tryagain" type="button" style="background:var(--accent);border-color:var(--accent);color:#171106;">TRY AGAIN <span class="arr" style="color:#171106;">&#8635;</span></button>
+      </div>
+
+      <div class="mic-card" id="mic-picker-area">
+        <h3>2 &middot; Pick your microphone</h3>
+        <p id="mic-picker-status">Enable your microphone first — your microphones will be listed here once the game is allowed to use them.</p>
+        <div class="set-row" style="border-bottom:none;">
+          <label for="mic-device-select">Microphone</label>
+          <select id="mic-device-select"><option value="">Enable microphone to list your mics</option></select>
+        </div>
+        <div class="mic-picker-note">Your choice is remembered on this device, so you only have to pick once. Changing it while a mic is live switches to the new mic straight away.</div>
+      </div>
+
+      <div class="mic-card" id="mic-test-area">
+        <h3>3 &middot; Test your mic</h3>
+        <p>Talk at your normal volume — the bar should move as you speak. You can check this here, before joining a server.</p>
+        <div class="mic-meter-track" id="mic-meter-track"><div id="mic-meter-fill"></div></div>
+        <div id="mic-test-status">Enable your microphone above, then talk — the bar will move.</div>
+        <div id="mic-test-working" class="hidden">Mic is working — the game can hear you.</div>
+        <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <button class="vbtn" id="btn-mic-test-ptt" type="button" style="min-height:44px; padding:8px 16px;">HOLD TO TEST</button>
+          <span style="color:var(--dim); font-size:12.5px;">Hold V to test — or hold the button — and speak.</span>
+        </div>
+      </div>
+
+      <p class="voice-note">In a server, voice is <b>push-to-talk</b>: hold <b>V</b> on desktop, hold the <b>MIC</b> button on touch, or hold the <b>left stick click</b> in VR. Voice runs player-to-player, live only — never recorded or stored. There is <b>no filter for spoken words</b>, so mute yourself, mute everyone, or mute one player from the voice bar instead.</p>
+      <div class="backrow"><button class="btn" id="btn-mic-back" type="button">Back <span class="arr">&larr;</span></button></div>
+    </section>
+
     <!-- ================= Pause ================= -->
     <section id="scr-pause" class="screen overlay">
       <div class="screen-head">
@@ -799,6 +941,17 @@ OpenBox.RegisterWeapon("knife", { kind = "melee", damage = 45, range = 2.2, fire
         <button class="btn hidden" id="btn-pause-leave">Leave server <span class="arr">&rarr;</span></button>
         <button class="btn" id="btn-pause-quit">Quit to menu <span class="arr">&rarr;</span></button>
       </nav>
+      <div id="pause-voice" class="hidden">
+        <h3>VOICE CHAT</h3>
+        <p class="vstatus" id="pause-voice-status">Mic off — hold V to talk</p>
+        <div class="vrow">
+          <button class="vbtn" id="btn-pv-mute-self">MUTE ME</button>
+          <button class="vbtn" id="btn-pv-mute-all">MUTE ALL</button>
+          <button class="vbtn" id="btn-pv-setup" title="Mic setup">MIC SETUP</button>
+        </div>
+        <div id="pause-voice-players"></div>
+        <p class="vstatus" style="margin:10px 0 0;">Voice is only with players in your server. There is no filter for spoken words — mute anyone above instead. Nothing is recorded.</p>
+      </div>
     </section>
 
     <!-- ================= Death ================= -->
@@ -861,7 +1014,7 @@ var rand = function(a,b){ return a + Math.random()*(b-a); };
 /* Single source of truth for the game version. Bump this one constant
    when a new build ships — the home footer and every update check
    compare against it. */
-var GAME_VERSION = "0.1.5";
+var GAME_VERSION = "0.1.5.2";
 var UPDATE_RELEASES_API = "https://api.github.com/repos/elipoop94/openbox-opensource-sandbox-game-/releases/latest";
 var UPDATE_RELEASES_PAGE = "https://github.com/elipoop94/openbox-opensource-sandbox-game-/releases/latest";
 
@@ -3684,7 +3837,7 @@ function updatePrompt(now){
 }
 
 /* ---------------- Screens / navigation ---------------- */
-var screens = { home:"scr-home", maps:"scr-maps", mods:"scr-mods", settings:"scr-settings", pause:"scr-pause", quit:"scr-quit", death:"scr-death", multiplayer:"scr-multiplayer", update:"scr-update", community:"scr-community" };
+var screens = { home:"scr-home", maps:"scr-maps", mods:"scr-mods", settings:"scr-settings", pause:"scr-pause", quit:"scr-quit", death:"scr-death", multiplayer:"scr-multiplayer", update:"scr-update", community:"scr-community", micsetup:"scr-micsetup" };
 var settingsReturn = "home";
 function showScreen(name){
   Object.keys(screens).forEach(function(k){ $(screens[k]).classList.toggle("active", k === name); });
@@ -3693,6 +3846,8 @@ function showScreen(name){
   if (name === "update" && typeof checkForUpdates === "function") checkForUpdates();
   if (name === "multiplayer" && typeof openMultiplayerBrowser === "function") openMultiplayerBrowser();
   if (name === "community" && typeof openCommunityMaps === "function") openCommunityMaps();
+  if (name === "micsetup" && typeof micOnShow === "function") micOnShow();
+  if (name !== "micsetup" && typeof VC !== "undefined" && VC.micSetupOpen && typeof micOnHide === "function") micOnHide();
 }
 function renderMapList(){
   var list = $("map-list"); list.innerHTML = "";
@@ -3986,6 +4141,9 @@ document.addEventListener("mousedown", function(e){
      they must not capture the mouse, fire, or place a second piece
      alongside the bar button's own handler (v0.1.5). */
   if (e.target && e.target.closest && e.target.closest("#builder-ui")) return;
+  /* Same for the multiplayer / voice HUD bars: their buttons (LEAVE,
+     HOLD TO TALK, MUTE…) are UI clicks, never game clicks. */
+  if (e.target && e.target.closest && (e.target.closest("#hud-voicebar") || e.target.closest("#hud-mpbar"))) return;
   if (!lookActive()){
     /* The capture click: clicking on the game locks the mouse onto the
        view (pointer lock) — the cursor disappears and every mouse
@@ -4274,6 +4432,637 @@ function mpPublishEvent(ev){
   ev.from = MP.playerId;
   mpPublish(mpTopicRoom("ev"), ev, false);
 }
+/* ---------------- Voice chat (v0.1.5.1) ----------------
+   WebRTC peer-to-peer voice between players in the same server.
+   There is no voice server: the existing MQTT relay carries ONLY
+   signaling (SDP offers/answers + ICE candidates) on the per-room
+   "voice" topic; the audio itself flows directly between players'
+   browsers (Opus). Mesh topology — one connection per pair of
+   players — which suits these small servers. Nothing is recorded,
+   stored or sent anywhere else: voice is live only.
+   Push-to-talk is the only mode: the mic track is attached to a
+   connection (and enabled) only while a talk input is held and the
+   player has not muted themselves. If the microphone is missing or
+   permission is denied, voice stays off with a plain message and
+   the game is completely unaffected. */
+function vcStored(key){ try { return localStorage.getItem(key); } catch(e){ return null; } }
+function vcStore(key, val){ try { if (val == null) localStorage.removeItem(key); else localStorage.setItem(key, val); } catch(e){} }
+var VC = {
+  stream: null, starting: null, denied: false,
+  selectedDeviceId: vcStored("openbox.vc.deviceId") || "",
+  setupDone: vcStored("openbox.vc.setupDone") === "1",
+  micSetupOpen: false, testHeld: false, micHeard: false, meterTimer: null, lastMicSig: "",
+  sources: { key: false, touch: false, btn: false, vr: false },
+  transmitting: false, selfTalking: false,
+  mutedSelf: false, mutedAll: false, mutedPeers: {},
+  entries: {}, analysers: {}, talking: {},
+  lastTalkTick: 0, lastPlayersSig: "", lastStatusSig: ""
+};
+function vcPttHeld(){ return !!(VC.sources.key || VC.sources.touch || VC.sources.btn || VC.sources.vr); }
+function vcSupported(){
+  return !!(window.RTCPeerConnection && navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+}
+function vcPublish(obj){
+  if (!MP.active || !MP.serverId) return;
+  obj.from = MP.playerId;
+  mpPublish(mpTopicRoom("voice"), obj, false);
+}
+function vcStatusText(){
+  if (!vcSupported()) return "Microphone unavailable — this browser can't share a mic. Voice is off; the game still works.";
+  if (VC.denied) return "Microphone blocked — tap MIC SETUP to pick a mic, allow it and try again. Voice is off; the game still works.";
+  if (VC.mutedSelf) return "You are muted — unmute to talk.";
+  if (VC.transmitting && VC.selfTalking) return "MIC LIVE — players in this server can hear you.";
+  if (VC.transmitting) return "MIC LIVE — hold and speak.";
+  if (VC.stream) return IS_TOUCH ? "Mic ready — hold the MIC button to talk." : "Mic ready — hold V to talk.";
+  return IS_TOUCH ? "Mic off — hold the MIC button to talk. Nothing is sent until you hold it." : "Mic off — hold V to talk. Nothing is sent until you hold it.";
+}
+function vcRenderUI(){
+  if (typeof micRefreshUI === "function") micRefreshUI();
+  var inServer = typeof MP !== "undefined" && MP.active;
+  var bar = $("hud-voicebar"); if (bar) bar.classList.toggle("hidden", !inServer);
+  var pv = $("pause-voice"); if (pv) pv.classList.toggle("hidden", !inServer);
+  var micBtn = $("t-mic"); if (micBtn) micBtn.classList.toggle("hidden", !inServer);
+  if (!inServer) return;
+  var txt = vcStatusText();
+  var live = VC.transmitting;
+  var err = VC.denied || !vcSupported();
+  var sig = txt + "|" + live + "|" + VC.mutedSelf + "|" + VC.mutedAll;
+  if (sig !== VC.lastStatusSig){
+    VC.lastStatusSig = sig;
+    [["voice-status"],["pause-voice-status"]].forEach(function(pair){
+      var el = $(pair[0]); if (!el) return;
+      el.textContent = txt;
+      el.classList.toggle("live", live && !err);
+      el.classList.toggle("err", err);
+    });
+    ["btn-voice-mute-self","btn-pv-mute-self"].forEach(function(id){
+      var b = $(id); if (!b) return;
+      b.textContent = VC.mutedSelf ? "UNMUTE ME" : "MUTE ME";
+      b.classList.toggle("on", VC.mutedSelf);
+    });
+    ["btn-voice-mute-all","btn-pv-mute-all"].forEach(function(id){
+      var b = $(id); if (!b) return;
+      b.textContent = VC.mutedAll ? "UNMUTE ALL" : "MUTE ALL";
+      b.classList.toggle("on", VC.mutedAll);
+    });
+    var ptt = $("btn-voice-ptt");
+    if (ptt){ ptt.textContent = live ? "MIC LIVE" : "HOLD TO TALK"; ptt.classList.toggle("live", live); }
+    if (micBtn){ micBtn.textContent = live ? "LIVE" : "MIC"; micBtn.classList.toggle("live", live); micBtn.classList.toggle("active", live); }
+  }
+  vcRenderPlayers();
+}
+function vcRenderPlayers(){
+  var ids = Object.keys(MP.peers).sort();
+  var sig = ids.map(function(pid){
+    return pid + ":" + (VC.mutedPeers[pid] ? 1 : 0) + ":" + (VC.talking[pid] ? 1 : 0);
+  }).join(",");
+  if (sig === VC.lastPlayersSig) return;
+  VC.lastPlayersSig = sig;
+  [["voice-players"],["pause-voice-players"]].forEach(function(pair){
+    var wrap = $(pair[0]); if (!wrap) return;
+    wrap.innerHTML = "";
+    ids.forEach(function(pid){
+      var pr = MP.peers[pid]; if (!pr) return;
+      var chip = document.createElement("div");
+      chip.className = "vchip" + (VC.talking[pid] ? " talking" : "");
+      var dot = document.createElement("span"); dot.className = "vdot";
+      var nm = document.createElement("span"); nm.textContent = pr.name;
+      var mb = document.createElement("button"); mb.className = "vmute" + (VC.mutedPeers[pid] ? " on" : "");
+      mb.textContent = VC.mutedPeers[pid] ? "UNMUTE" : "MUTE";
+      mb.addEventListener("click", function(){ AudioSys.init(); AudioSys.ui(); vcTogglePeerMute(pid); });
+      chip.appendChild(dot); chip.appendChild(nm); chip.appendChild(mb);
+      wrap.appendChild(chip);
+    });
+  });
+}
+function vcApplyTrackState(){
+  var inPlay = typeof state === "undefined" || (state === "playing" && !paused && !playerDead && !spawnOpen);
+  var want = !!(MP.active && inPlay && vcPttHeld() && !VC.mutedSelf && VC.stream);
+  VC.transmitting = want;
+  var track = VC.stream ? (VC.stream.getAudioTracks()[0] || null) : null;
+  if (track) track.enabled = !!(want || VC.micSetupOpen);
+  Object.keys(VC.entries).forEach(function(pid){
+    var e = VC.entries[pid]; if (!e || !e.sender) return;
+    var send = want ? track : null;
+    if (e.sentTrack !== send){
+      e.sentTrack = send;
+      try {
+        var p = e.sender.replaceTrack(send);
+        if (p && p.catch) p.catch(function(){});
+      } catch(err){}
+    }
+  });
+  vcRenderUI();
+}
+function vcSetSource(name, on){
+  on = !!on;
+  /* The mic can only go live during actual play — never from a menu,
+     the pause screen, the spawn menu or the death screen. */
+  if (on && typeof state !== "undefined" && (state !== "playing" || paused || playerDead || spawnOpen)) on = false;
+  if (VC.sources[name] === on) return;
+  VC.sources[name] = on;
+  if (!MP.active){ vcApplyTrackState(); return; }
+  if (on && !VC.mutedSelf && !VC.stream) vcEnsureMic();
+  vcApplyTrackState();
+}
+function vcEnsureMic(){
+  if (VC.stream) return Promise.resolve(true);
+  if (VC.starting) return VC.starting;
+  if (!vcSupported()){
+    VC.denied = true; vcRenderUI();
+    toast("Microphone unavailable — this browser can't share a mic. Voice stays off; the game is unaffected. Open Mic Setup for details.");
+    return Promise.resolve(false);
+  }
+  var audioConstraint = { echoCancellation: true, noiseSuppression: true, autoGainControl: true };
+  if (VC.selectedDeviceId) audioConstraint.deviceId = { exact: VC.selectedDeviceId };
+  VC.starting = navigator.mediaDevices.getUserMedia({
+    audio: audioConstraint, video: false
+  }).then(function(stream){
+    VC.starting = null; VC.stream = stream; VC.denied = false;
+    VC.setupDone = true; vcStore("openbox.vc.setupDone", "1");
+    var liveTrack = stream.getAudioTracks()[0];
+    if (liveTrack && liveTrack.getSettings){
+      var did = liveTrack.getSettings().deviceId;
+      if (did && did !== "default" && did !== "communications" && did !== VC.selectedDeviceId){ VC.selectedDeviceId = did; vcStore("openbox.vc.deviceId", did); }
+    }
+    if (typeof micRefreshDevices === "function") micRefreshDevices();
+    /* If every track ends (mic unplugged / permission revoked), drop
+       back to the plain unavailable state instead of erroring. */
+    stream.getAudioTracks().forEach(function(t){
+      t.addEventListener("ended", function(){
+        if (VC.stream === stream){ VC.stream = null; VC.denied = true; VC.setupDone = false; vcStore("openbox.vc.setupDone", null); vcApplyTrackState(); vcRenderUI(); }
+      });
+    });
+    /* Mic acquired after connections exist: hand the (still gated)
+       track to every peer connection's sender. */
+    Object.keys(VC.entries).forEach(function(pid){ vcEnsurePeer(pid, false); });
+    vcAttachAnalyser("self", stream);
+    vcApplyTrackState(); vcRenderUI();
+    return true;
+  }).catch(function(){
+    VC.starting = null; VC.denied = true;
+    vcApplyTrackState(); vcRenderUI();
+    toast("Microphone blocked — voice stays off and the game is unaffected. Open Mic Setup (voice bar, Multiplayer or Settings) to allow it and try again.");
+    return false;
+  });
+  return VC.starting;
+}
+function vcEnsurePeer(pid, allowOffer){
+  if (!pid || pid === MP.playerId || !MP.active) return null;
+  var e = VC.entries[pid];
+  if (e) return e;
+  if (!window.RTCPeerConnection) return null;
+  var pc = null;
+  try {
+    pc = new RTCPeerConnection({ iceServers: [
+      { urls: "stun:stun.l.google.com:19302" },
+      { urls: "stun:stun1.l.google.com:19302" }
+    ] });
+  } catch(err){ return null; }
+  e = { pc: pc, sender: null, sentTrack: undefined, iceQueue: [], remoteSet: false, makingOffer: false, audioEl: null, remoteStream: null };
+  VC.entries[pid] = e;
+  try {
+    var tr = pc.addTransceiver("audio", { direction: "sendrecv" });
+    e.sender = tr.sender;
+  } catch(err){
+    try { e.sender = pc.addTrack(new MediaStream().getAudioTracks()[0] || null); } catch(err2){}
+  }
+  pc.onicecandidate = function(ev){
+    if (ev && ev.candidate) vcPublish({ to: pid, kind: "ice", candidate: ev.candidate });
+  };
+  pc.ontrack = function(ev){
+    var stream = (ev.streams && ev.streams[0]) || null;
+    if (!stream){ stream = new MediaStream(); stream.addTrack(ev.track); }
+    e.remoteStream = stream;
+    vcAttachRemoteAudio(pid, stream);
+    vcAttachAnalyser(pid, stream);
+  };
+  pc.onconnectionstatechange = function(){
+    if (pc.connectionState === "failed" || pc.connectionState === "closed"){
+      /* A failed peer link only loses voice with that one player —
+         never the game. The next state broadcast re-creates it. */
+      vcClosePeer(pid);
+    }
+  };
+  /* Deterministic initiator (lower player id offers) so a pair of
+     players never sends colliding offers at each other. */
+  if (allowOffer && MP.playerId < pid) vcMakeOffer(pid);
+  vcApplyTrackState();
+  return e;
+}
+function vcMakeOffer(pid){
+  var e = VC.entries[pid]; if (!e || e.makingOffer) return;
+  e.makingOffer = true;
+  e.pc.createOffer().then(function(desc){
+    return e.pc.setLocalDescription(desc);
+  }).then(function(){
+    e.makingOffer = false;
+    vcPublish({ to: pid, kind: "offer", sdp: e.pc.localDescription });
+  }).catch(function(){ e.makingOffer = false; });
+}
+function vcFlushIce(e){
+  if (!e.remoteSet) return;
+  var q = e.iceQueue.splice(0);
+  q.forEach(function(c){ try { e.pc.addIceCandidate(c).catch(function(){}); } catch(err){} });
+}
+function vcOnSignal(data){
+  if (!data || data.from === MP.playerId || data.to !== MP.playerId) return;
+  var pid = data.from;
+  var e = vcEnsurePeer(pid, false);
+  if (!e) return;
+  if (data.kind === "offer" && data.sdp){
+    if (e.makingOffer) return; /* glare guard — the lower id's offer wins */
+    e.pc.setRemoteDescription(new RTCSessionDescription(data.sdp)).then(function(){
+      e.remoteSet = true; vcFlushIce(e);
+      return e.pc.createAnswer();
+    }).then(function(desc){
+      return e.pc.setLocalDescription(desc);
+    }).then(function(){
+      vcPublish({ to: pid, kind: "answer", sdp: e.pc.localDescription });
+    }).catch(function(){});
+  } else if (data.kind === "answer" && data.sdp){
+    e.pc.setRemoteDescription(new RTCSessionDescription(data.sdp)).then(function(){
+      e.remoteSet = true; vcFlushIce(e);
+    }).catch(function(){});
+  } else if (data.kind === "ice" && data.candidate){
+    var cand = null;
+    try { cand = new RTCIceCandidate(data.candidate); } catch(err){ return; }
+    if (e.remoteSet){ try { e.pc.addIceCandidate(cand).catch(function(){}); } catch(err){} }
+    else e.iceQueue.push(cand);
+  }
+}
+function vcAttachRemoteAudio(pid, stream){
+  var e = VC.entries[pid]; if (!e) return;
+  var holder = $("voice-audio-holder"); if (!holder) return;
+  if (!e.audioEl){
+    var el = document.createElement("audio");
+    el.autoplay = true; el.setAttribute("playsinline", "");
+    holder.appendChild(el);
+    e.audioEl = el;
+  }
+  e.audioEl.srcObject = stream;
+  vcApplyRemoteMute(pid);
+  var p = e.audioEl.play(); if (p && p.catch) p.catch(function(){});
+}
+function vcApplyRemoteMute(pid){
+  var e = VC.entries[pid]; if (!e || !e.audioEl) return;
+  e.audioEl.muted = !!(VC.mutedAll || VC.mutedPeers[pid]);
+}
+function vcTogglePeerMute(pid){
+  VC.mutedPeers[pid] = !VC.mutedPeers[pid];
+  vcApplyRemoteMute(pid);
+  VC.lastPlayersSig = ""; vcRenderUI();
+  var pr = MP.peers[pid];
+  toast(VC.mutedPeers[pid] ? ("Muted " + (pr ? pr.name : "player") + " — you won't hear them.") : ("Unmuted " + (pr ? pr.name : "player") + "."));
+}
+function vcSetMutedSelf(v){
+  VC.mutedSelf = !!v;
+  if (VC.mutedSelf){ /* muting cuts a live mic instantly */ }
+  vcApplyTrackState(); vcRenderUI();
+}
+function vcSetMutedAll(v){
+  VC.mutedAll = !!v;
+  Object.keys(VC.entries).forEach(vcApplyRemoteMute);
+  vcRenderUI();
+}
+function vcClosePeer(pid){
+  var e = VC.entries[pid]; if (!e) return;
+  delete VC.entries[pid];
+  delete VC.talking[pid];
+  delete VC.analysers[pid];
+  try { e.pc.close(); } catch(err){}
+  if (e.audioEl){ try { e.audioEl.srcObject = null; } catch(err){} if (e.audioEl.parentNode) e.audioEl.parentNode.removeChild(e.audioEl); }
+  VC.lastPlayersSig = ""; vcRenderUI();
+}
+function vcTeardown(){
+  Object.keys(VC.entries).forEach(function(pid){ vcClosePeer(pid); });
+  VC.entries = {}; VC.analysers = {}; VC.talking = {}; VC.selfTalking = false;
+  VC.sources.key = false; VC.sources.touch = false; VC.sources.btn = false; VC.sources.vr = false;
+  VC.transmitting = false;
+  if (VC.stream){
+    VC.stream.getTracks().forEach(function(t){ try { t.stop(); } catch(err){} });
+    VC.stream = null;
+  }
+  VC.starting = null;
+  var holder = $("voice-audio-holder"); if (holder) holder.innerHTML = "";
+  VC.lastPlayersSig = ""; VC.lastStatusSig = "";
+  vcRenderUI();
+}
+/* ---------------- Mic Setup (v0.1.5.2) ----------------
+   A real setup flow for the microphone, reachable before joining a
+   server: enable permission, pick a mic (remembered on this device),
+   and SEE it working on a live level meter. A blocked mic gets exact
+   fix instructions and a Try again button — never a dead end. The
+   setup stream IS the voice stream (VC.stream): while this screen is
+   open vcApplyTrackState keeps the track enabled so the meter can
+   hear it, but peer senders only ever receive the track while
+   push-to-talk is held during play, so opening setup never broadcasts. */
+var micReturn = "home";
+function micGetState(){
+  if (!vcSupported()) return "blocked";
+  if (VC.denied) return "blocked";
+  if (VC.stream || VC.setupDone) return "ready";
+  return "unset";
+}
+function micIsSetUp(){ return micGetState() === "ready"; }
+function micStateLabel(st){ return st === "ready" ? "Ready" : st === "blocked" ? "Blocked" : "Not set up"; }
+function micRefreshUI(){
+  var st = micGetState();
+  var sig = st + "|" + !!VC.stream + "|" + VC.selectedDeviceId + "|" + VC.micHeard + "|" + VC.testHeld;
+  if (sig === VC.lastMicSig && !$("scr-micsetup").classList.contains("active")) return;
+  VC.lastMicSig = sig;
+  /* Setup screen state line */
+  var stateEl = $("mic-setup-state");
+  if (stateEl){
+    stateEl.textContent = micStateLabel(st);
+    stateEl.className = st === "ready" ? "ready" : st === "blocked" ? "blocked" : "unset";
+  }
+  var detail = $("mic-setup-detail");
+  if (detail){
+    detail.textContent = !vcSupported()
+      ? "This browser can't share a microphone, so voice chat is off here. The game still works — try a browser with microphone support for voice."
+      : st === "ready"
+        ? (VC.stream ? "Your microphone is ready. Pick it below if you have more than one, and test it — then join a server and hold push-to-talk to talk. Nothing is recorded."
+                     : "Your microphone was set up on this device. Join a server and hold push-to-talk to talk — the game will use the mic you picked. Nothing is recorded.")
+        : st === "blocked"
+          ? "Your browser blocked the microphone, or no mic was found. Follow the steps in the red box below, then press Try again."
+          : "Voice chat needs your microphone. Nothing is recorded. Press ENABLE MICROPHONE, pick your mic, and watch the test meter move — you can see it working before you join a server.";
+  }
+  var blocked = $("mic-blocked-area"); if (blocked) blocked.classList.toggle("hidden", st !== "blocked");
+  var enableBtn = $("btn-mic-enable"); if (enableBtn) enableBtn.textContent = st === "ready" ? "MICROPHONE IS ON — ENABLE AGAIN" : "ENABLE MICROPHONE";
+  var pickerStatus = $("mic-picker-status");
+  if (pickerStatus){
+    pickerStatus.textContent = VC.stream
+      ? "Pick the microphone you want to talk with:"
+      : st === "blocked" ? "Your microphones will be listed here once the block is fixed and you press Try again."
+      : "Enable your microphone first — your microphones will be listed here once the game is allowed to use them.";
+  }
+  var testStatus = $("mic-test-status");
+  if (testStatus && !VC.testHeld){
+    testStatus.textContent = VC.stream
+      ? (VC.micHeard ? "That level movement is your mic hearing you." : "Talk now — the bar should move as you speak.")
+      : "Enable your microphone above, then talk — the bar will move.";
+  }
+  var working = $("mic-test-working"); if (working) working.classList.toggle("hidden", !VC.micHeard);
+  /* Settings → Voice status line */
+  var setStatus = $("settings-mic-status");
+  if (setStatus) setStatus.textContent = "Microphone: " + micStateLabel(st) + (st === "ready" ? " — hold push-to-talk in a server to talk." : st === "blocked" ? " — open Mic Setup for the fix steps and Try again." : " — set up your mic to talk in multiplayer voice chat.");
+  micUpdateMpPrompt(st);
+}
+function micUpdateMpPrompt(st){
+  var prompt = $("mp-mic-prompt"); if (!prompt) return;
+  st = st || micGetState();
+  var title = $("mp-mic-prompt-title"), text = $("mp-mic-prompt-text"), btn = $("btn-mp-mic-setup");
+  prompt.classList.toggle("ready", st === "ready");
+  if (st === "ready"){
+    if (title) title.textContent = "Mic ready";
+    if (text) text.textContent = "Your microphone is set up. Join a server and hold V (desktop), the MIC button (touch) or the left stick click (VR) to talk. Nothing is recorded.";
+    if (btn) btn.firstChild.textContent = "MIC SETUP ";
+  } else if (st === "blocked"){
+    if (title) title.textContent = "Your mic is blocked — fix it in Mic Setup";
+    if (text) text.textContent = "Your browser blocked the microphone, or no mic was found. Mic Setup shows the exact steps to allow it, plus a Try again button. You can still join and play without voice.";
+    if (btn) btn.firstChild.textContent = "SET UP MIC ";
+  } else {
+    if (title) title.textContent = "Set up your mic to talk";
+    if (text) text.textContent = "Voice chat needs a set-up microphone. Set it up now — pick your mic and test it here, before you join a server, instead of finding out mid-game that nobody can hear you. Nothing is recorded.";
+    if (btn) btn.firstChild.textContent = "SET UP MIC ";
+  }
+}
+function micRefreshDevices(){
+  var sel = $("mic-device-select"); if (!sel) return;
+  if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices){
+    sel.innerHTML = ""; var o0 = document.createElement("option"); o0.value = ""; o0.textContent = "This browser can't list microphones"; sel.appendChild(o0);
+    return;
+  }
+  navigator.mediaDevices.enumerateDevices().then(function(devices){
+    var mics = devices.filter(function(d){ return d.kind === "audioinput"; });
+    var cur = sel.value;
+    sel.innerHTML = "";
+    if (!mics.length){
+      var o = document.createElement("option"); o.value = "";
+      o.textContent = VC.stream ? "No microphones found" : "Enable microphone to list your mics";
+      sel.appendChild(o); return;
+    }
+    mics.forEach(function(d, i){
+      var o = document.createElement("option");
+      o.value = d.deviceId;
+      o.textContent = d.label || ("Microphone " + (i + 1));
+      sel.appendChild(o);
+    });
+    var want = VC.selectedDeviceId || cur;
+    var has = mics.some(function(d){ return d.deviceId === want; });
+    sel.value = has ? want : (mics[0].deviceId || "");
+    if (sel.value && sel.value !== VC.selectedDeviceId && VC.stream){
+      VC.selectedDeviceId = sel.value; vcStore("openbox.vc.deviceId", sel.value);
+    }
+  }).catch(function(){});
+}
+function micRequestPermission(){
+  AudioSys.init(); AudioSys.resume();
+  if (!vcSupported()){
+    VC.denied = true; VC.lastMicSig = ""; micRefreshUI();
+    toast("Microphone unavailable — this browser can't share a mic. Voice stays off; the game is unaffected.");
+    return Promise.resolve(false);
+  }
+  VC.denied = false; VC.lastMicSig = ""; micRefreshUI();
+  return vcEnsureMic().then(function(ok){
+    VC.lastMicSig = ""; micRefreshUI(); micRefreshDevices();
+    if (ok) toast("Microphone ready — talk and watch the test bar move. Your pick is remembered on this device.");
+    return ok;
+  });
+}
+function micChangeDevice(deviceId){
+  VC.selectedDeviceId = deviceId || "";
+  vcStore("openbox.vc.deviceId", VC.selectedDeviceId || null);
+  if (!VC.stream){ VC.lastMicSig = ""; micRefreshUI(); return; }
+  /* Live-switch: drop the old mic and re-acquire on the picked one. */
+  var old = VC.stream;
+  VC.stream = null; delete VC.analysers["self"]; VC.micHeard = false;
+  old.getTracks().forEach(function(t){ try { t.stop(); } catch(e){} });
+  vcEnsureMic().then(function(ok){
+    VC.lastMicSig = ""; micRefreshUI();
+    toast(ok ? "Switched microphone — talk to test it on the bar." : "That microphone could not be opened — check Mic Setup.");
+  });
+  vcApplyTrackState();
+}
+function micOpenSetup(from){
+  micReturn = from || "home";
+  if (typeof state !== "undefined" && state === "playing") paused = true;
+  showScreen("micsetup");
+}
+function micGoBack(){
+  micOnHide();
+  if (micReturn === "settings") showScreen("settings");
+  else if (micReturn === "multiplayer") showScreen("multiplayer");
+  else if (micReturn === "pause" && typeof state !== "undefined" && state === "playing") showScreen("pause");
+  else showScreen("home");
+}
+function micOnShow(){
+  VC.micSetupOpen = true; VC.micHeard = VC.micHeard && !!VC.stream;
+  VC.lastMicSig = ""; micRefreshUI(); micRefreshDevices();
+  vcApplyTrackState();
+  micStartMeter();
+  /* Previously set up on this device and the browser still allows the
+     mic? Re-open it silently so the meter is live straight away. If
+     permission was revoked this lands on the blocked path instead of
+     prompting out of nowhere — this screen IS the place to fix it. */
+  if (!VC.stream && !VC.denied && VC.setupDone && vcSupported()){
+    if (navigator.permissions && navigator.permissions.query){
+      try {
+        navigator.permissions.query({ name: "microphone" }).then(function(res){
+          if (res && res.state === "granted" && $("scr-micsetup").classList.contains("active")) micRequestPermission();
+        }).catch(function(){});
+      } catch(e){}
+    }
+  }
+}
+function micOnHide(){
+  if (!VC.micSetupOpen) return;
+  VC.micSetupOpen = false; VC.testHeld = false;
+  micStopMeter();
+  vcApplyTrackState();
+}
+function micStartMeter(){
+  micStopMeter();
+  VC.meterTimer = setInterval(micMeterTick, 80);
+}
+function micStopMeter(){
+  if (VC.meterTimer){ clearInterval(VC.meterTimer); VC.meterTimer = null; }
+  var fill = $("mic-meter-fill"); if (fill) fill.style.width = "0%";
+}
+function micMeterTick(){
+  if (!VC.micSetupOpen) return;
+  var lvl = VC.stream ? vcLevel("self") : 0;
+  var pct = Math.round(clamp(lvl * 340, 0, 100));
+  var fill = $("mic-meter-fill"); if (fill) fill.style.width = pct + "%";
+  var track = $("mic-meter-track"); if (track) track.classList.toggle("hot", pct > 62);
+  if (VC.stream && lvl > 0.03 && !VC.micHeard){
+    VC.micHeard = true; VC.lastMicSig = ""; micRefreshUI();
+  }
+  var testStatus = $("mic-test-status");
+  if (testStatus && VC.testHeld) testStatus.textContent = VC.micHeard ? "Mic is working — that movement is you. Release to stop the test." : "Testing — speak now and watch the bar move.";
+}
+function micSetTestHeld(on){
+  on = !!on;
+  if (VC.testHeld === on) return;
+  VC.testHeld = on;
+  var b = $("btn-mic-test-ptt");
+  if (b){ b.classList.toggle("live", on); b.textContent = on ? "TESTING — SPEAK NOW" : "HOLD TO TEST"; }
+  if (on && !VC.stream) micRequestPermission();
+  VC.lastMicSig = ""; micRefreshUI();
+}
+(function micWire(){
+  var enable = $("btn-mic-enable"); if (enable) enable.addEventListener("click", function(){ micRequestPermission(); });
+  var retry = $("btn-mic-tryagain"); if (retry) retry.addEventListener("click", function(){ micRequestPermission(); });
+  var sel = $("mic-device-select"); if (sel) sel.addEventListener("change", function(){ AudioSys.init(); micChangeDevice(this.value); });
+  var testBtn = $("btn-mic-test-ptt");
+  if (testBtn){
+    var on = function(e){ e.preventDefault(); AudioSys.init(); micSetTestHeld(true); };
+    var off = function(){ micSetTestHeld(false); };
+    testBtn.addEventListener("pointerdown", on);
+    testBtn.addEventListener("pointerup", off);
+    testBtn.addEventListener("pointercancel", off);
+    testBtn.addEventListener("pointerleave", off);
+    testBtn.addEventListener("touchstart", function(e){ e.preventDefault(); e.stopPropagation(); AudioSys.init(); micSetTestHeld(true); }, { passive: false });
+    testBtn.addEventListener("touchend", function(e){ e.preventDefault(); micSetTestHeld(false); }, { passive: false });
+    testBtn.addEventListener("contextmenu", function(e){ e.preventDefault(); });
+  }
+  var hudSetup = $("btn-voice-setup"); if (hudSetup) hudSetup.addEventListener("click", function(){ AudioSys.init(); AudioSys.ui(); micOpenSetup("pause"); });
+  var pvSetup = $("btn-pv-setup"); if (pvSetup) pvSetup.addEventListener("click", function(){ AudioSys.init(); AudioSys.ui(); micOpenSetup("pause"); });
+  window.addEventListener("keydown", function(e){
+    if (e.code !== "KeyV") return;
+    var scr = $("scr-micsetup"); if (!scr || !scr.classList.contains("active")) return;
+    var t = e.target;
+    if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT")) return;
+    if (!e.repeat) micSetTestHeld(true);
+  });
+  window.addEventListener("keyup", function(e){
+    if (e.code !== "KeyV") return;
+    var scr = $("scr-micsetup"); if (!scr || !scr.classList.contains("active")) return;
+    micSetTestHeld(false);
+  });
+  window.addEventListener("blur", function(){ if (VC.micSetupOpen) micSetTestHeld(false); });
+  if (navigator.mediaDevices && navigator.mediaDevices.addEventListener){
+    navigator.mediaDevices.addEventListener("devicechange", function(){ if (VC.micSetupOpen) micRefreshDevices(); });
+  }
+})();
+
+/* ----- Talking indicators (analyser levels, checked in mpTick) ----- */
+function vcAttachAnalyser(key, stream){
+  try {
+    AudioSys.init();
+    if (!AudioSys.ctx) return;
+    if (AudioSys.ctx.state === "suspended") AudioSys.resume();
+    var src = AudioSys.ctx.createMediaStreamSource(stream);
+    var an = AudioSys.ctx.createAnalyser();
+    an.fftSize = 256;
+    src.connect(an);
+    VC.analysers[key] = { an: an, data: new Uint8Array(an.frequencyBinCount) };
+  } catch(err){ /* no analyser = no light-up; voice itself still works */ }
+}
+function vcLevel(key){
+  var a = VC.analysers[key]; if (!a) return 0;
+  a.an.getByteTimeDomainData(a.data);
+  var sum = 0;
+  for (var i = 0; i < a.data.length; i++){ var v = (a.data[i] - 128) / 128; sum += v * v; }
+  return Math.sqrt(sum / a.data.length);
+}
+function vcTickTalk(now){
+  if (!MP.active) return;
+  if (typeof VR !== "undefined" && !VR.active && VC.sources.vr) vcSetSource("vr", false);
+  if (now - VC.lastTalkTick < 180) return;
+  VC.lastTalkTick = now;
+  var changed = false;
+  var selfTalk = !!(VC.transmitting && vcLevel("self") > 0.025);
+  if (selfTalk !== VC.selfTalking){ VC.selfTalking = selfTalk; changed = true; }
+  Object.keys(MP.peers).forEach(function(pid){
+    var pr = MP.peers[pid]; if (!pr) return;
+    var talk = vcLevel(pid) > 0.02;
+    if (!!VC.talking[pid] !== talk){
+      VC.talking[pid] = talk; changed = true;
+    }
+    if (pr.vcDot) pr.vcDot.visible = talk;
+    if (pr.nameSp && pr.nameSp.material) pr.nameSp.material.color.set(talk ? "#8be26b" : "#ffffff");
+  });
+  if (changed){ VC.lastStatusSig = ""; VC.lastPlayersSig = ""; vcRenderUI(); }
+}
+/* ----- Voice input wiring ----- */
+window.addEventListener("keydown", function(e){
+  if (e.code !== "KeyV") return;
+  var t = e.target;
+  if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT")) return;
+  if (!e.repeat) vcSetSource("key", true);
+});
+window.addEventListener("keyup", function(e){
+  if (e.code === "KeyV") vcSetSource("key", false);
+});
+window.addEventListener("blur", function(){
+  vcSetSource("key", false); vcSetSource("btn", false); vcSetSource("touch", false);
+});
+(function vcWireButtons(){
+  function holdable(id, source){
+    var el = $(id); if (!el) return;
+    var on = function(e){ e.preventDefault(); AudioSys.init(); vcSetSource(source, true); };
+    var off = function(){ vcSetSource(source, false); };
+    el.addEventListener("pointerdown", on);
+    el.addEventListener("pointerup", off);
+    el.addEventListener("pointercancel", off);
+    el.addEventListener("pointerleave", off);
+    el.addEventListener("touchstart", function(e){ e.preventDefault(); e.stopPropagation(); AudioSys.init(); vcSetSource(source, true); }, { passive: false });
+    el.addEventListener("touchend", function(e){ e.preventDefault(); vcSetSource(source, false); }, { passive: false });
+    el.addEventListener("touchcancel", function(){ vcSetSource(source, false); }, { passive: true });
+    el.addEventListener("contextmenu", function(e){ e.preventDefault(); });
+  }
+  holdable("btn-voice-ptt", "btn");
+  holdable("t-mic", "touch");
+  ["btn-voice-mute-self","btn-pv-mute-self"].forEach(function(id){
+    var b = $(id); if (b) b.addEventListener("click", function(){ AudioSys.init(); AudioSys.ui(); vcSetMutedSelf(!VC.mutedSelf); });
+  });
+  ["btn-voice-mute-all","btn-pv-mute-all"].forEach(function(id){
+    var b = $(id); if (b) b.addEventListener("click", function(){ AudioSys.init(); AudioSys.ui(); vcSetMutedAll(!VC.mutedAll); });
+  });
+})();
+
 function mpConnect(cb){
   if (MP.connected && MP.client){ if (cb) cb(true); return; }
   if (cb) MP.pendingCbs.push(cb);
@@ -4351,11 +5140,14 @@ function mpOnMessage(topic, payload){
     mpOnPeerState(pid, data);
   } else if (kind === "ev"){
     mpOnEvent(data);
+  } else if (kind === "voice"){
+    vcOnSignal(data);
   } else if (kind === "nb"){
     if (!MP.isHost) mpApplyNbState(data);
   }
 }
 function openMultiplayerBrowser(){
+  if (typeof micRefreshUI === "function"){ VC.lastMicSig = ""; micRefreshUI(); }
   var nameEl = $("mp-name");
   if (nameEl && !nameEl.dataset.init){ nameEl.value = MP.playerName; nameEl.dataset.init = "1"; }
   var sn = $("mp-server-name");
@@ -4423,6 +5215,10 @@ function createPeer(pid, data){
   var armL = limb(0.58, 0.04), armR = limb(0.58, 0.04);
   var legL = limb(0.92, 0.045), legR = limb(0.92, 0.045);
   var nameSp = makeNameSprite(data.name, color); g.add(nameSp);
+  /* Voice talking indicator (v0.1.5.1): a bright dot beside the name
+     tag, lit by vcTickTalk while this player's voice is audible. */
+  var vcDot = new THREE.Mesh(new THREE.SphereGeometry(0.055, 10, 8), new THREE.MeshBasicMaterial({ color: 0x8be26b }));
+  vcDot.visible = false; g.add(vcDot);
   var hc = document.createElement("canvas"); hc.width = 64; hc.height = 10;
   var hpTex = new THREE.CanvasTexture(hc);
   var hpSp = new THREE.Sprite(new THREE.SpriteMaterial({ map: hpTex, depthTest: false, transparent: true }));
@@ -4431,6 +5227,7 @@ function createPeer(pid, data){
     id: pid, name: data.name || "Player", color: color, group: g,
     head: head, torso: torso, armL: armL, armR: armR, legL: legL, legR: legR,
     nameSp: nameSp, hpSp: hpSp, hpCanvas: hc, hpTex: hpTex, lastHpDrawn: -1,
+    vcDot: vcDot,
     target: new THREE.Vector3(data.x || 0, data.y || 0, data.z || 0),
     yaw: data.yaw || 0, crouch: !!data.crouch, crouchAmt: data.crouch ? 1 : 0,
     hp: data.hp != null ? data.hp : 100, dead: !!data.dead,
@@ -4460,6 +5257,7 @@ function drawPeerHp(pr){
 }
 function removePeer(pid){
   var pr = MP.peers[pid]; if (!pr) return;
+  if (typeof vcClosePeer === "function") vcClosePeer(pid);
   if (worldGroup) worldGroup.remove(pr.group);
   delete MP.peers[pid];
 }
@@ -4467,6 +5265,7 @@ function mpOnPeerState(pid, data){
   if (state !== "playing" || !worldGroup) return;
   var pr = MP.peers[pid];
   if (!pr) pr = createPeer(pid, data);
+  if (typeof vcEnsurePeer === "function") vcEnsurePeer(pid, true);
   pr.target.set(data.x || 0, data.y || 0, data.z || 0);
   pr.yaw = data.yaw || 0; pr.crouch = !!data.crouch;
   pr.hp = data.hp != null ? data.hp : 100; pr.dead = !!data.dead;
@@ -4505,6 +5304,7 @@ function posePeer(pr, dt){
   pr.head.position.set(0, headY, 0);
   pr.hpSp.position.set(0, headY + 0.32, 0);
   pr.nameSp.position.set(0, headY + 0.55, 0);
+  if (pr.vcDot) pr.vcDot.position.set(0.88, headY + 0.55, 0);
   pr.group.visible = !pr.dead;
 }
 /* ----- Room lifecycle ----- */
@@ -4515,8 +5315,10 @@ function mpJoinRoom(serverId, serverName, asHost){
     MP.client.subscribe(mpTopicRoom("p/#"));
     MP.client.subscribe(mpTopicRoom("ev"));
     MP.client.subscribe(mpTopicRoom("nb"));
+    MP.client.subscribe(mpTopicRoom("voice"));
   }
   startGame(Registry.maps[0]);
+  if (typeof vcRenderUI === "function"){ VC.lastStatusSig = ""; VC.lastPlayersSig = ""; vcRenderUI(); }
   $("hud-mpbar").classList.remove("hidden");
   $("hud-mp-name").textContent = MP.serverName.toUpperCase();
   $("btn-pause-leave").classList.remove("hidden");
@@ -4537,11 +5339,13 @@ function mpLeaveRoom(silent){
   if (!MP.active) return;
   mpPublishEvent({ t: "leave", name: MP.playerName });
   if (MP.isHost && MP.serverId) mpPublish(mpTopicServers(MP.serverId), null, true);
+  if (typeof vcTeardown === "function") vcTeardown();
   if (MP.client && MP.serverId){
     try {
       MP.client.unsubscribe(mpTopicRoom("p/#"));
       MP.client.unsubscribe(mpTopicRoom("ev"));
       MP.client.unsubscribe(mpTopicRoom("nb"));
+      MP.client.unsubscribe(mpTopicRoom("voice"));
     } catch(e){}
   }
   Object.keys(MP.peers).forEach(removePeer);
@@ -4550,6 +5354,8 @@ function mpLeaveRoom(silent){
   }
   MP.active = false; MP.isHost = false; MP.serverId = null; MP.serverName = ""; MP.nbState = null;
   var bar = $("hud-mpbar"); if (bar) bar.classList.add("hidden");
+  var vb = $("hud-voicebar"); if (vb) vb.classList.add("hidden");
+  var pv2 = $("pause-voice"); if (pv2) pv2.classList.add("hidden");
   var lv = $("btn-pause-leave"); if (lv) lv.classList.add("hidden");
   updateHealthHud();
   if (!silent) toast("Left the server.");
@@ -4580,6 +5386,7 @@ function mpOnEvent(ev){
     if (MP.peers[ev.from]){ toast((ev.name || MP.peers[ev.from].name) + " left the server."); removePeer(ev.from); mpUpdateHudCount(); }
   } else if (ev.t === "hello"){
     mpUpdateHudCount();
+    if (typeof vcEnsurePeer === "function") vcEnsurePeer(ev.from, true);
   }
 }
 /* ----- Host -> clients: Kanye NextBot mirroring ----- */
@@ -4624,6 +5431,7 @@ function mpApplyNbState(data){
 /* ----- Per-frame multiplayer tick ----- */
 function mpTick(dt, now){
   if (!MP.active) return;
+  if (typeof vcTickTalk === "function") vcTickTalk(now);
   Object.keys(MP.peers).forEach(function(pid){
     var pr = MP.peers[pid];
     if (now - pr.lastSeen > 8000){ removePeer(pid); return; }
@@ -5624,6 +6432,9 @@ function nav(id, fn){ $(id).addEventListener("click", function(){ AudioSys.init(
 nav("btn-play", function(){ showScreen("maps"); });
 nav("btn-multiplayer", function(){ showScreen("multiplayer"); });
 nav("btn-mp-back", function(){ showScreen("home"); });
+nav("btn-mp-mic-setup", function(){ micOpenSetup("multiplayer"); });
+nav("btn-settings-mic-setup", function(){ micOpenSetup("settings"); });
+nav("btn-mic-back", function(){ micGoBack(); });
 nav("btn-community", function(){ showScreen("community"); });
 nav("btn-maps-community", function(){ showScreen("community"); });
 nav("btn-cm-back", function(){ showScreen("home"); });
@@ -6559,6 +7370,10 @@ function vrPollController(name, s, dt, now, canPlay, panelOpen){
       if (Math.abs(ay) > 0.15) vrMove.f += -ay;
       if (ay < -0.92) vrMove.sprint = true; /* stick pushed fully forward */
     }
+    /* Voice push-to-talk (v0.1.5.1): hold the left thumbstick click
+       (button 3). X/Y stay the spawn menu, so PTT gets its own button.
+       Set every frame while held; vcTickTalk clears it if VR ends. */
+    if (typeof vcSetSource === "function") vcSetSource("vr", !!(canPlay && !panelOpen && pressed(3)));
     /* X or Y: the spawn menu (the left controller's menu-side buttons) */
     if (edge(4) || edge(5)){
       if (drivingVehicle){ exitVehicle(); }
@@ -6807,6 +7622,12 @@ function vrDrawHud(){
     g.textAlign = "left"; g.fillStyle = "#ff8c1a"; g.font = "700 30px system-ui, sans-serif";
     g.fillText("CROUCHED", 28, 148);
   }
+  /* Voice status (v0.1.5.1, multiplayer only) */
+  if (typeof MP !== "undefined" && MP.active && typeof VC !== "undefined"){
+    g.textAlign = "right"; g.font = "700 28px system-ui, sans-serif";
+    g.fillStyle = VC.mutedSelf ? "#e2483d" : (VC.transmitting ? "#8be26b" : "#b9b4a6");
+    g.fillText(VC.mutedSelf ? "VOICE MUTED" : (VC.transmitting ? "MIC LIVE" : "VOICE — HOLD LEFT STICK CLICK TO TALK"), W - 28, 148);
+  }
   /* Help: controller line, then the gesture line */
   g.textAlign = "left"; g.font = "500 25px system-ui, sans-serif"; g.fillStyle = "#8f8a7d";
   g.fillText("LEFT STICK MOVE · RIGHT STICK TURN · TRIGGER FIRE · GRIP GRAB · X/Y MENU · A JUMP · B RELOAD", 28, 196);
@@ -6832,6 +7653,11 @@ function vrPanelItems(mode){
   } else if (mode === "pause"){
     items.push({ label: "Resume", tag: "", fn: function(){ vrResume(); } });
     if (typeof MP !== "undefined" && MP.active) items.push({ label: "Leave server", tag: "", fn: function(){ mpLeaveRoom(false); vrReturnToMenu(); } });
+    if (typeof MP !== "undefined" && MP.active && typeof VC !== "undefined"){
+      items.push({ label: VC.mutedSelf ? "Voice: unmute me" : "Voice: mute me", tag: "", fn: function(){ vcSetMutedSelf(!VC.mutedSelf); VR.panelItems = vrPanelItems("pause"); vrDrawPanel(); } });
+      items.push({ label: VC.mutedAll ? "Voice: unmute all players" : "Voice: mute all players", tag: "", fn: function(){ vcSetMutedAll(!VC.mutedAll); VR.panelItems = vrPanelItems("pause"); vrDrawPanel(); } });
+      items.push({ label: "Voice chat: hold left stick click to talk", tag: "PTT", fn: function(){} });
+    }
     items.push({ label: "Back to VR menu", tag: "", fn: function(){ vrReturnToMenu(); } });
     items.push({ label: "Exit VR", tag: "", fn: function(){ vrExitVR(); } });
   } else if (mode === "death"){
